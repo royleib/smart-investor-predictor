@@ -4,6 +4,7 @@ import { ArrowUpRight, ArrowDownRight, ExternalLink } from 'lucide-react';
 
 interface PredictionProps {
   symbol: string;
+  currentPrice: number;
   predictions: {
     period: string;
     price: number;
@@ -13,13 +14,18 @@ interface PredictionProps {
   explanation: string;
 }
 
-export const PredictionDisplay = ({ symbol, predictions, explanation }: PredictionProps) => {
+export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanation }: PredictionProps) => {
   return (
     <div className="space-y-6 p-4">
       <h2 className="text-2xl font-montserrat font-bold text-center mb-8">
         Predictions for {symbol}
       </h2>
       
+      <Card className="prediction-card mb-6">
+        <h3 className="text-lg font-semibold mb-2">Current Price</h3>
+        <p className="text-3xl font-bold text-blue-600">${currentPrice.toFixed(2)}</p>
+      </Card>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {predictions.map((pred) => (
           <Card key={pred.period} className="prediction-card">
