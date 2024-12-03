@@ -20,21 +20,40 @@ const Index = () => {
     const fetchCurrentPrice = async () => {
       if (step === 5 && selectedSymbol) {
         try {
+          console.log('Fetching price for:', selectedSymbol);
           const response = await axios.get(
-            `https://finnhub.io/api/v1/quote?symbol=${selectedSymbol}&token=${FINNHUB_API_KEY}`
+            `https://finnhub.io/api/v1/quote?symbol=${selectedSymbol}&token=${FINNHUB_API_KEY}`,
+            {
+              headers: {
+                'X-Finnhub-Token': FINNHUB_API_KEY
+              }
+            }
           );
-          if (response.data.c) {
+          console.log('API Response:', response.data);
+          
+          if (response.data && typeof response.data.c === 'number' && response.data.c > 0) {
+            console.log('Setting current price to:', response.data.c);
             setCurrentPrice(response.data.c);
           } else {
-            throw new Error('Invalid price data');
+            throw new Error('Invalid price data received');
           }
         } catch (error) {
+          console.error('Error fetching price:', error);
           toast({
             title: "Error fetching price",
             description: "Could not fetch current price. Using fallback data.",
             variant: "destructive",
           });
-          setCurrentPrice(239.59);
+          // Use more accurate fallback prices based on the selected symbol
+          const fallbackPrices = {
+            'AAPL': 189.30,
+            'MSFT': 404.87,
+            'GOOGL': 142.65,
+            'AMZN': 174.42,
+            'META': 484.03,
+            'TSLA': 202.64
+          };
+          setCurrentPrice(fallbackPrices[selectedSymbol as keyof typeof fallbackPrices] || 100);
         }
       }
     };
