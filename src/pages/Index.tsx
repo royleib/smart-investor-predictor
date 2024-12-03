@@ -1,27 +1,53 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AssetSelector } from '@/components/AssetSelector';
 import { MarketSelector } from '@/components/MarketSelector';
 import { PredictionDisplay } from '@/components/PredictionDisplay';
 import { useToast } from "@/components/ui/use-toast";
+import axios from 'axios';
+
+const FINNHUB_API_KEY = '4cslob0hr01qgp6njjev0cslob0hr01qgp6njjevg';
 
 const Index = () => {
   const [step, setStep] = useState(1);
   const [selectedAssetType, setSelectedAssetType] = useState('');
   const [selectedMarket, setSelectedMarket] = useState('');
+  const [currentPrice, setCurrentPrice] = useState<number | null>(null);
   const { toast } = useToast();
 
-  // Mock data with more realistic predictions based on current AAPL price
-  const mockPredictions = {
+  useEffect(() => {
+    const fetchCurrentPrice = async () => {
+      if (step === 4) {
+        try {
+          const response = await axios.get(
+            `https://finnhub.io/api/v1/quote?symbol=AAPL&token=${FINNHUB_API_KEY}`
+          );
+          setCurrentPrice(response.data.c); // Current price
+        } catch (error) {
+          toast({
+            title: "Error fetching price",
+            description: "Could not fetch current price. Using fallback data.",
+            variant: "destructive",
+          });
+          setCurrentPrice(239.59); // Fallback price
+        }
+      }
+    };
+
+    fetchCurrentPrice();
+  }, [step, toast]);
+
+  // Mock predictions based on current price
+  const getMockPredictions = (basePrice: number) => ({
     symbol: 'AAPL',
-    currentPrice: 239.59,
+    currentPrice: basePrice,
     predictions: [
-      { period: '1 Week', price: 242.75, probability: 0.75, trend: 'up' as const },
-      { period: '1 Month', price: 248.50, probability: 0.65, trend: 'up' as const },
-      { period: '6 Months', price: 265.25, probability: 0.55, trend: 'up' as const },
-      { period: '1 Year', price: 290.00, probability: 0.45, trend: 'up' as const },
+      { period: '1 Week', price: basePrice * 1.013, probability: 0.75, trend: 'up' as const },
+      { period: '1 Month', price: basePrice * 1.037, probability: 0.65, trend: 'up' as const },
+      { period: '6 Months', price: basePrice * 1.107, probability: 0.55, trend: 'up' as const },
+      { period: '1 Year', price: basePrice * 1.21, probability: 0.45, trend: 'up' as const },
     ],
     explanation: 'Based on strong technical indicators, positive market sentiment, and upcoming product launches, AAPL shows bullish trends. The company\'s consistent innovation and market leadership position support these predictions. Current market analysis and recent performance suggest a steady upward trajectory.',
-  };
+  });
 
   const handleAssetTypeSelect = (type: string) => {
     setSelectedAssetType(type);
@@ -30,7 +56,6 @@ const Index = () => {
 
   const handleMarketSelect = (market: string) => {
     setSelectedMarket(market);
-    // Skip API key step and go directly to predictions
     setStep(4);
   };
 
@@ -61,8 +86,8 @@ const Index = () => {
           </div>
         )}
 
-        {step === 4 && (
-          <PredictionDisplay {...mockPredictions} />
+        {step === 4 && currentPrice && (
+          <PredictionDisplay {...getMockPredictions(currentPrice)} />
         )}
       </main>
     </div>
