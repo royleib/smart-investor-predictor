@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { AssetSelector } from '@/components/AssetSelector';
 import { MarketSelector } from '@/components/MarketSelector';
 import { StockSelector } from '@/components/StockSelector';
+import { CryptoSelector } from '@/components/CryptoSelector';
 import { PredictionDisplay } from '@/components/PredictionDisplay';
 import { useToast } from "@/components/ui/use-toast";
 import axios from 'axios';
@@ -43,7 +44,6 @@ const Index = () => {
               throw new Error('Invalid crypto price data received');
             }
           } else {
-            // Existing stock price fetching logic
             const response = await axios.get('https://www.alphavantage.co/query', {
               params: {
                 function: 'GLOBAL_QUOTE',
@@ -70,7 +70,6 @@ const Index = () => {
             variant: "destructive",
           });
           
-          // Updated fallback prices
           const fallbackPrices: Record<string, number> = {
             // Stocks
             'AAPL': 191.45,
@@ -110,8 +109,7 @@ const Index = () => {
   const handleAssetTypeSelect = (type: string) => {
     setSelectedAssetType(type);
     if (type === 'Crypto') {
-      setSelectedSymbol('BTC'); // Default to Bitcoin
-      setStep(5); // Skip market selection for crypto
+      setStep(4); // Show crypto selector instead of going straight to step 5
     } else {
       setStep(2);
     }
@@ -123,6 +121,11 @@ const Index = () => {
   };
 
   const handleStockSelect = (symbol: string) => {
+    setSelectedSymbol(symbol);
+    setStep(5);
+  };
+
+  const handleCryptoSelect = (symbol: string) => {
     setSelectedSymbol(symbol);
     setStep(5);
   };
@@ -160,6 +163,15 @@ const Index = () => {
               Select Stock
             </h2>
             <StockSelector onSelect={handleStockSelect} />
+          </div>
+        )}
+
+        {step === 4 && selectedAssetType === 'Crypto' && (
+          <div>
+            <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center">
+              Select Cryptocurrency
+            </h2>
+            <CryptoSelector onSelect={handleCryptoSelect} />
           </div>
         )}
 
