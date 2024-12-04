@@ -6,7 +6,8 @@ import { PredictionDisplay } from '@/components/PredictionDisplay';
 import { useToast } from "@/components/ui/use-toast";
 import axios from 'axios';
 
-const FINNHUB_API_KEY = '4cslob0hr01qgp6njjev0cslob0hr01qgp6njjevg';
+// Using a sandbox API key for testing - this should be replaced with a production key
+const FINNHUB_API_KEY = 'sandbox_c8vqja9r01qj195ip7b0';
 
 const Index = () => {
   const [step, setStep] = useState(1);
@@ -21,16 +22,12 @@ const Index = () => {
       if (step === 5 && selectedSymbol) {
         try {
           console.log('Fetching price for:', selectedSymbol);
-          // Using the token as a query parameter only, not in headers
-          const response = await axios.get(
-            `https://finnhub.io/api/v1/quote`,
-            {
-              params: {
-                symbol: selectedSymbol,
-                token: FINNHUB_API_KEY
-              }
+          const response = await axios.get('https://finnhub.io/api/v1/quote', {
+            params: {
+              symbol: selectedSymbol,
+              token: FINNHUB_API_KEY
             }
-          );
+          });
           
           console.log('API Response:', response.data);
           
