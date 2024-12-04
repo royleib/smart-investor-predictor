@@ -6,8 +6,7 @@ import { PredictionDisplay } from '@/components/PredictionDisplay';
 import { useToast } from "@/components/ui/use-toast";
 import axios from 'axios';
 
-// Using a sandbox API key for testing - this should be replaced with a production key
-const FINNHUB_API_KEY = 'sandbox_c8vqja9r01qj195ip7b0';
+const ALPHA_VANTAGE_API_KEY = 'XLLX4SPDO7AUDSG3';
 
 const Index = () => {
   const [step, setStep] = useState(1);
@@ -22,18 +21,20 @@ const Index = () => {
       if (step === 5 && selectedSymbol) {
         try {
           console.log('Fetching price for:', selectedSymbol);
-          const response = await axios.get('https://finnhub.io/api/v1/quote', {
+          const response = await axios.get('https://www.alphavantage.co/query', {
             params: {
+              function: 'GLOBAL_QUOTE',
               symbol: selectedSymbol,
-              token: FINNHUB_API_KEY
+              apikey: ALPHA_VANTAGE_API_KEY
             }
           });
           
           console.log('API Response:', response.data);
           
-          if (response.data && typeof response.data.c === 'number' && response.data.c > 0) {
-            console.log('Setting current price to:', response.data.c);
-            setCurrentPrice(response.data.c);
+          if (response.data['Global Quote'] && response.data['Global Quote']['05. price']) {
+            const price = parseFloat(response.data['Global Quote']['05. price']);
+            console.log('Setting current price to:', price);
+            setCurrentPrice(price);
           } else {
             throw new Error('Invalid price data received');
           }
