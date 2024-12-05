@@ -71,13 +71,27 @@ const Index = () => {
           });
           
           const fallbackPrices: Record<string, number> = {
-            // Stocks
+            // Stocks - US
             'AAPL': 191.45,
             'MSFT': 378.85,
             'GOOGL': 134.99,
             'AMZN': 147.03,
             'META': 325.28,
             'TSLA': 238.45,
+            // Stocks - EU
+            'ASML.AMS': 687.30,
+            'SAP.FRA': 145.78,
+            'LVMH.PAR': 834.50,
+            'SIE.FRA': 165.92,
+            'NOVO-B.CPH': 725.40,
+            'SHELL.LON': 2543.50,
+            // Stocks - ASIA
+            '9984.TYO': 6789.00,
+            '005930.KRX': 71500.00,
+            '9988.HKG': 72.55,
+            '000660.KRX': 125000.00,
+            '7203.TYO': 2825.50,
+            '1299.HKG': 67.85,
             // Crypto
             'BTC': 43250.00,
             'ETH': 2280.50,
@@ -109,7 +123,7 @@ const Index = () => {
   const handleAssetTypeSelect = (type: string) => {
     setSelectedAssetType(type);
     if (type === 'Crypto') {
-      setStep(4); // Show crypto selector instead of going straight to step 5
+      setStep(4);
     } else {
       setStep(2);
     }
@@ -157,12 +171,12 @@ const Index = () => {
           </div>
         )}
 
-        {step === 3 && selectedMarket === 'US' && (
+        {step === 3 && selectedMarket && (
           <div>
             <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center">
               Select Stock
             </h2>
-            <StockSelector onSelect={handleStockSelect} />
+            <StockSelector onSelect={handleStockSelect} market={selectedMarket} />
           </div>
         )}
 
