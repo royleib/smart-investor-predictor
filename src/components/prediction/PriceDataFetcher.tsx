@@ -46,8 +46,10 @@ export const fetchPrice = async (symbol: string, assetType: string) => {
   console.log('Fetching price for:', symbol, 'Type:', assetType);
   
   try {
+    const baseURL = 'https://www.alphavantage.co/query';
+    
     if (assetType === 'Crypto') {
-      const response = await axios.get('https://www.alphavantage.co/query', {
+      const response = await axios.get(baseURL, {
         params: {
           function: 'CURRENCY_EXCHANGE_RATE',
           from_currency: symbol,
@@ -64,7 +66,7 @@ export const fetchPrice = async (symbol: string, assetType: string) => {
       }
       throw new Error('Invalid crypto price data received');
     } else {
-      const response = await axios.get('https://www.alphavantage.co/query', {
+      const response = await axios.get(baseURL, {
         params: {
           function: 'GLOBAL_QUOTE',
           symbol: symbol,
