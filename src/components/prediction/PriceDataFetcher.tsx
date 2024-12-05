@@ -11,7 +11,6 @@ interface PriceDataFetcherProps {
 
 const ALPHA_VANTAGE_API_KEY = 'XLLX4SPDO7AUDSG3';
 
-// Fallback prices moved from Index.tsx
 const fallbackPrices: Record<string, number> = {
   // Stocks - US
   'AAPL': 191.45,
@@ -99,8 +98,8 @@ export const PriceDataFetcher = ({ step, selectedSymbol, selectedAssetType, setC
         } catch (error) {
           console.error('Error in price fetch:', error);
           toast({
-            title: "Using fallback price data",
-            description: "Could not fetch real-time price. Using recent historical data.",
+            title: "Using Historical Price Data",
+            description: "Live price data unavailable. Using recent historical price for analysis.",
             variant: "default",
           });
           
