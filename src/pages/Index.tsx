@@ -1,90 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { AssetSelector } from '@/components/AssetSelector';
 import { MarketSelector } from '@/components/MarketSelector';
 import { StockSelector } from '@/components/StockSelector';
 import { CryptoSelector } from '@/components/CryptoSelector';
 import { PredictionDisplay } from '@/components/PredictionDisplay';
-import { useToast } from "@/hooks/use-toast";
-import axios from 'axios';
-
-// Move API key to environment variable in production
-const ALPHA_VANTAGE_API_KEY = 'XLLX4SPDO7AUDSG3';
-
-// Separate the price fetching logic
-const fetchPrice = async (symbol: string, assetType: string) => {
-  console.log('Fetching price for:', symbol, 'Type:', assetType);
-  
-  try {
-    if (assetType === 'Crypto') {
-      const response = await axios.get('https://www.alphavantage.co/query', {
-        params: {
-          function: 'CURRENCY_EXCHANGE_RATE',
-          from_currency: symbol,
-          to_currency: 'USD',
-          apikey: ALPHA_VANTAGE_API_KEY
-        }
-      });
-      
-      console.log('Crypto API Response:', response.data);
-      
-      if (response.data['Realtime Currency Exchange Rate'] && 
-          response.data['Realtime Currency Exchange Rate']['5. Exchange Rate']) {
-        return parseFloat(response.data['Realtime Currency Exchange Rate']['5. Exchange Rate']);
-      }
-      throw new Error('Invalid crypto price data received');
-    } else {
-      const response = await axios.get('https://www.alphavantage.co/query', {
-        params: {
-          function: 'GLOBAL_QUOTE',
-          symbol: symbol,
-          apikey: ALPHA_VANTAGE_API_KEY
-        }
-      });
-      
-      console.log('Stock API Response:', response.data);
-      
-      if (response.data['Global Quote'] && response.data['Global Quote']['05. price']) {
-        return parseFloat(response.data['Global Quote']['05. price']);
-      }
-      throw new Error('Invalid stock price data received');
-    }
-  } catch (error) {
-    console.error('Error fetching price:', error);
-    throw error;
-  }
-};
-
-// Fallback prices for when API fails
-const fallbackPrices: Record<string, number> = {
-  // Stocks - US
-  'AAPL': 191.45,
-  'MSFT': 378.85,
-  'GOOGL': 134.99,
-  'AMZN': 147.03,
-  'META': 325.28,
-  'TSLA': 238.45,
-  // Stocks - EU
-  'ASML.AMS': 687.30,
-  'SAP.FRA': 145.78,
-  'LVMH.PAR': 834.50,
-  'SIE.FRA': 165.92,
-  'NOVO-B.CPH': 725.40,
-  'SHELL.LON': 2543.50,
-  // Stocks - ASIA
-  '9984.TYO': 6789.00,
-  '005930.KRX': 71500.00,
-  '9988.HKG': 72.55,
-  '000660.KRX': 125000.00,
-  '7203.TYO': 2825.50,
-  '1299.HKG': 67.85,
-  // Crypto
-  'BTC': 43250.00,
-  'ETH': 2280.50,
-  'USDT': 1.00,
-  'BNB': 305.75,
-  'SOL': 98.45,
-  'XRP': 0.55,
-};
+import { PriceDataFetcher } from '@/components/prediction/PriceDataFetcher';
+import { generatePredictions } from '@/components/prediction/PredictionGenerator';
 
 const Index = () => {
   const [step, setStep] = useState(1);
@@ -92,95 +13,6 @@ const Index = () => {
   const [selectedMarket, setSelectedMarket] = useState('');
   const [selectedSymbol, setSelectedSymbol] = useState('');
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const getPriceData = async () => {
-      if (step === 5 && selectedSymbol) {
-        try {
-          const price = await fetchPrice(selectedSymbol, selectedAssetType);
-          console.log('Setting current price to:', price);
-          setCurrentPrice(price);
-        } catch (error) {
-          console.error('Error in price fetch:', error);
-          toast({
-            title: "Using fallback price data",
-            description: "Could not fetch real-time price. Using recent historical data.",
-            variant: "default",
-          });
-          
-          const fallbackPrice = fallbackPrices[selectedSymbol];
-          if (fallbackPrice) {
-            console.log('Using fallback price:', fallbackPrice);
-            setCurrentPrice(fallbackPrice);
-          } else {
-            console.error('No fallback price available for:', selectedSymbol);
-            toast({
-              title: "Error",
-              description: "Could not retrieve price data for this asset.",
-              variant: "destructive",
-            });
-          }
-        }
-      }
-    };
-
-    getPriceData();
-  }, [step, selectedSymbol, selectedAssetType, toast]);
-
-  const getMockPredictions = (basePrice: number) => {
-    const getRandomTrend = () => Math.random() > 0.5 ? 'up' as const : 'down' as const;
-    
-    const getExplanation = () => {
-      if (selectedAssetType === 'Crypto') {
-        return `Analysis for ${selectedSymbol}: The cryptocurrency market shows ${getRandomTrend() === 'up' ? 'positive' : 'negative'} momentum. 
-        Key factors include: regulatory developments in major markets, institutional adoption trends, network activity metrics, and overall market sentiment. 
-        Technical indicators suggest ${getRandomTrend() === 'up' ? 'potential breakthrough of resistance levels' : 'testing of support levels'}. 
-        Consider market volatility and global economic factors affecting digital assets.`;
-      } else {
-        return `Analysis for ${selectedSymbol}: Based on comprehensive market research including:
-        1. Financial Performance: Recent ${getRandomTrend() === 'up' ? 'strong' : 'mixed'} quarterly results
-        2. Industry Trends: ${getRandomTrend() === 'up' ? 'Growing' : 'Challenging'} market conditions
-        3. Economic Indicators: Impact of interest rates and inflation
-        4. Technical Analysis: ${getRandomTrend() === 'up' ? 'Bullish' : 'Bearish'} momentum indicators
-        5. Market Sentiment: ${getRandomTrend() === 'up' ? 'Positive' : 'Cautious'} institutional investor outlook`;
-      }
-    };
-
-    const predictions = [
-      {
-        period: '1 Week',
-        price: basePrice * (1 + (Math.random() * 0.04 - 0.02)), // ±2%
-        probability: 0.75 + (Math.random() * 0.1),
-        trend: getRandomTrend()
-      },
-      {
-        period: '1 Month',
-        price: basePrice * (1 + (Math.random() * 0.08 - 0.04)), // ±4%
-        probability: 0.65 + (Math.random() * 0.1),
-        trend: getRandomTrend()
-      },
-      {
-        period: '6 Months',
-        price: basePrice * (1 + (Math.random() * 0.16 - 0.08)), // ±8%
-        probability: 0.55 + (Math.random() * 0.1),
-        trend: getRandomTrend()
-      },
-      {
-        period: '1 Year',
-        price: basePrice * (1 + (Math.random() * 0.24 - 0.12)), // ±12%
-        probability: 0.45 + (Math.random() * 0.1),
-        trend: getRandomTrend()
-      }
-    ];
-
-    return {
-      symbol: selectedSymbol,
-      currentPrice: basePrice,
-      predictions,
-      explanation: getExplanation()
-    };
-  };
 
   const handleAssetTypeSelect = (type: string) => {
     setSelectedAssetType(type);
@@ -215,6 +47,13 @@ const Index = () => {
       </header>
 
       <main className="container mx-auto px-4 max-w-4xl">
+        <PriceDataFetcher
+          step={step}
+          selectedSymbol={selectedSymbol}
+          selectedAssetType={selectedAssetType}
+          setCurrentPrice={setCurrentPrice}
+        />
+
         {step === 1 && (
           <div>
             <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center">
@@ -252,7 +91,7 @@ const Index = () => {
         )}
 
         {step === 5 && currentPrice && (
-          <PredictionDisplay {...getMockPredictions(currentPrice)} />
+          <PredictionDisplay {...generatePredictions(currentPrice, selectedSymbol, selectedAssetType)} />
         )}
       </main>
     </div>
