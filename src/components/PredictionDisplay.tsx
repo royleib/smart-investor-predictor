@@ -55,7 +55,7 @@ export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanati
       <div className="mt-8 text-center">
         <Button 
           className="gradient-bg text-white"
-          onClick={() => window.open('https://www.etoro.com', '_blank')}
+          onClick={() => window.open('https://med.etoro.com/B12087_A71830_TClick.aspx', '_blank')}
         >
           Start Trading on eToro <ExternalLink className="ml-2 h-4 w-4" />
         </Button>
