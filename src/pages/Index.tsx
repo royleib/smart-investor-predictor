@@ -1,26 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from "@/integrations/supabase/client";
-import { AssetSelector } from '@/components/AssetSelector';
-import { MarketSelector } from '@/components/MarketSelector';
 import { StockSelector } from '@/components/StockSelector';
 import { CryptoSelector } from '@/components/CryptoSelector';
-import { PredictionDisplay } from '@/components/PredictionDisplay';
-import { PriceDataFetcher } from '@/components/prediction/PriceDataFetcher';
-import { generatePredictions } from '@/components/prediction/PredictionGenerator';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
 
 const Index = () => {
+  const [session, setSession] = useState<any>(null);
   const [step, setStep] = useState(1);
   const [selectedAssetType, setSelectedAssetType] = useState('');
   const [selectedMarket, setSelectedMarket] = useState('');
   const [selectedSymbol, setSelectedSymbol] = useState('');
-  const [currentPrice, setCurrentPrice] = useState<number | null>(null);
-  const [session, setSession] = useState<any>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -54,23 +46,13 @@ const Index = () => {
     setStep(3);
   };
 
-  const handleStockSelect = (symbol: string) => {
-    setSelectedSymbol(symbol);
-    setStep(5);
-  };
-
-  const handleCryptoSelect = (symbol: string) => {
-    setSelectedSymbol(symbol);
-    setStep(5);
-  };
-
   if (!session) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-900 to-blue-700">
         <div className="container mx-auto px-4 py-16">
-          <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+          <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
             <div className="p-8">
-              <h1 className="text-4xl font-montserrat font-bold text-center mb-2 text-blue-900">
+              <h1 className="text-3xl font-montserrat font-bold text-center mb-2 text-blue-900">
                 Market Prediction AI
               </h1>
               <p className="text-gray-600 text-center mb-8">
@@ -117,19 +99,23 @@ const Index = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <PriceDataFetcher
-          step={step}
-          selectedSymbol={selectedSymbol}
-          selectedAssetType={selectedAssetType}
-          setCurrentPrice={setCurrentPrice}
-        />
-
         {step === 1 && (
           <div className="bg-white rounded-xl shadow-md p-8">
             <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-blue-900">
               Select Asset Type
             </h2>
-            <AssetSelector onSelect={handleAssetTypeSelect} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {['Stocks', 'Crypto'].map((type) => (
+                <button
+                  key={type}
+                  onClick={() => handleAssetTypeSelect(type)}
+                  className="prediction-card hover:shadow-xl"
+                >
+                  <h3 className="text-xl font-montserrat font-semibold text-blue-900">{type}</h3>
+                  <p className="text-gray-600 mt-2">Get AI predictions for {type.toLowerCase()}</p>
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
@@ -138,30 +124,37 @@ const Index = () => {
             <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-blue-900">
               Select Market
             </h2>
-            <MarketSelector onSelect={handleMarketSelect} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {['US', 'EU', 'ASIA'].map((market) => (
+                <button
+                  key={market}
+                  onClick={() => handleMarketSelect(market)}
+                  className="prediction-card hover:shadow-xl"
+                >
+                  <h3 className="text-xl font-montserrat font-semibold text-blue-900">{market}</h3>
+                  <p className="text-gray-600 mt-2">{market} Market</p>
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
         {step === 3 && selectedMarket && (
-          <div className="bg-white rounded-xl shadow-md p-8">
-            <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-blue-900">
-              Select Stock
+          <div className="bg-white rounded-xl shadow-md">
+            <h2 className="text-2xl font-montserrat font-semibold p-6 text-center text-blue-900">
+              Select Stock from {selectedMarket} Market
             </h2>
-            <StockSelector onSelect={handleStockSelect} market={selectedMarket} />
+            <StockSelector onSelect={(symbol) => setSelectedSymbol(symbol)} market={selectedMarket} />
           </div>
         )}
 
         {step === 4 && selectedAssetType === 'Crypto' && (
-          <div className="bg-white rounded-xl shadow-md p-8">
-            <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-blue-900">
+          <div className="bg-white rounded-xl shadow-md">
+            <h2 className="text-2xl font-montserrat font-semibold p-6 text-center text-blue-900">
               Select Cryptocurrency
             </h2>
-            <CryptoSelector onSelect={handleCryptoSelect} />
+            <CryptoSelector onSelect={(symbol) => setSelectedSymbol(symbol)} />
           </div>
-        )}
-
-        {step === 5 && currentPrice && (
-          <PredictionDisplay {...generatePredictions(currentPrice, selectedSymbol, selectedAssetType)} />
         )}
       </main>
     </div>
