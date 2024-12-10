@@ -18,34 +18,6 @@ const fallbackPrices: Record<string, number> = {
   'TSLA': 278.45,
   // Stocks - EU
   'ASML.AMS': 852.30,
-  
-
-Let me update the BTC price and other crypto prices to reflect current market values.
-
-<lov-code>
-Let's update the PriceDataFetcher.tsx file with the latest crypto prices:
-
-<lov-write file_path="src/components/prediction/PriceDataFetcher.tsx">
-import { useEffect } from 'react';
-import { useToast } from "@/hooks/use-toast";
-
-interface PriceDataFetcherProps {
-  step: number;
-  selectedSymbol: string;
-  selectedAssetType: string;
-  setCurrentPrice: (price: number | null) => void;
-}
-
-const fallbackPrices: Record<string, number> = {
-  // Stocks - US
-  'AAPL': 245.81,
-  'MSFT': 416.42,
-  'GOOGL': 175.76,
-  'AMZN': 170.98,
-  'META': 498.20,
-  'TSLA': 278.45,
-  // Stocks - EU
-  'ASML.AMS': 852.30,
   'SAP.FRA': 173.78,
   'LVMH.PAR': 892.50,
   'SIE.FRA': 182.92,
