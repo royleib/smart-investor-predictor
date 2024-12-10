@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
 import { LoginPage } from '@/components/auth/LoginPage';
 import { PriceDataFetcher } from '@/components/prediction/PriceDataFetcher';
+import { generatePredictions } from '@/components/prediction/PredictionGenerator';
 
 const Index = () => {
   const [session, setSession] = useState<any>(null);
@@ -133,35 +134,7 @@ const Index = () => {
 
         {step === 5 && selectedSymbol && currentPrice && (
           <PredictionDisplay
-            symbol={selectedSymbol}
-            currentPrice={currentPrice}
-            predictions={[
-              {
-                period: '1 Week',
-                price: currentPrice * 1.02,
-                probability: 0.65,
-                trend: 'up' as const,
-              },
-              {
-                period: '1 Month',
-                price: currentPrice * 1.05,
-                probability: 0.58,
-                trend: 'up' as const,
-              },
-              {
-                period: '6 Months',
-                price: currentPrice * 0.95,
-                probability: 0.62,
-                trend: 'down' as const,
-              },
-              {
-                period: '1 Year',
-                price: currentPrice * 1.15,
-                probability: 0.70,
-                trend: 'up' as const,
-              },
-            ]}
-            explanation="Based on our analysis of market trends, technical indicators, and fundamental factors, we predict a generally positive trajectory for this asset. The short-term outlook shows potential volatility, but long-term indicators suggest strong growth potential."
+            {...generatePredictions(currentPrice, selectedSymbol, selectedAssetType)}
           />
         )}
       </main>
