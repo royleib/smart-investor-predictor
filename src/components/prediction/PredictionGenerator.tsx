@@ -35,15 +35,17 @@ export const generatePredictions = (basePrice: number, selectedSymbol: string, s
     }
   };
 
-  // Generate predictions with properly calculated trends
   const generatePrediction = (period: string, percentageRange: number): Prediction => {
-    const randomFactor = (Math.random() * 2 - 1) * percentageRange; // Random between -range and +range
+    const randomFactor = (Math.random() * 2 - 1) * percentageRange;
     const predictedPrice = basePrice * (1 + randomFactor);
+    
+    // Updated probability generation to be between 0.75 and 0.95
+    const probability = 0.75 + (Math.random() * 0.20);
     
     return {
       period,
       price: predictedPrice,
-      probability: 0.45 + (Math.random() * 0.3), // Between 0.45 and 0.75
+      probability,
       trend: calculateTrend(predictedPrice, basePrice)
     };
   };
