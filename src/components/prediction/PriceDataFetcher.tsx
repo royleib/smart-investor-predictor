@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import axios from 'axios';
 import { useToast } from "@/hooks/use-toast";
 
 interface PriceDataFetcherProps {
@@ -8,8 +7,6 @@ interface PriceDataFetcherProps {
   selectedAssetType: string;
   setCurrentPrice: (price: number | null) => void;
 }
-
-const ALPHA_VANTAGE_API_KEY = 'XLLX4SPDO7AUDSG3';
 
 const fallbackPrices: Record<string, number> = {
   // Stocks - US
@@ -42,91 +39,24 @@ const fallbackPrices: Record<string, number> = {
   'XRP': 0.55,
 };
 
-export const fetchPrice = async (symbol: string, assetType: string) => {
-  console.log('Fetching price for:', symbol, 'Type:', assetType);
-  
-  const instance = axios.create({
-    baseURL: 'https://www.alphavantage.co/query',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  
-  try {
-    if (assetType === 'Crypto') {
-      const response = await instance.get('', {
-        params: {
-          function: 'CURRENCY_EXCHANGE_RATE',
-          from_currency: symbol,
-          to_currency: 'USD',
-          apikey: ALPHA_VANTAGE_API_KEY
-        }
-      });
-      
-      console.log('Crypto API Response:', response.data);
-      
-      if (response.data['Realtime Currency Exchange Rate'] && 
-          response.data['Realtime Currency Exchange Rate']['5. Exchange Rate']) {
-        return parseFloat(response.data['Realtime Currency Exchange Rate']['5. Exchange Rate']);
-      }
-      throw new Error('Invalid crypto price data received');
-    } else {
-      const response = await instance.get('', {
-        params: {
-          function: 'GLOBAL_QUOTE',
-          symbol: symbol,
-          apikey: ALPHA_VANTAGE_API_KEY
-        }
-      });
-      
-      console.log('Stock API Response:', response.data);
-      
-      if (response.data['Global Quote'] && response.data['Global Quote']['05. price']) {
-        return parseFloat(response.data['Global Quote']['05. price']);
-      }
-      throw new Error('Invalid stock price data received');
-    }
-  } catch (error) {
-    console.error('Error fetching price:', error);
-    throw error;
-  }
-};
-
 export const PriceDataFetcher = ({ step, selectedSymbol, selectedAssetType, setCurrentPrice }: PriceDataFetcherProps) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const getPriceData = async () => {
-      if (step === 5 && selectedSymbol) {
-        try {
-          const price = await fetchPrice(selectedSymbol, selectedAssetType);
-          console.log('Setting current price to:', price);
-          setCurrentPrice(price);
-        } catch (error) {
-          console.error('Error in price fetch:', error);
-          toast({
-            title: "Using Historical Price Data",
-            description: "Live price data unavailable. Using recent historical price for analysis.",
-            variant: "default",
-          });
-          
-          const fallbackPrice = fallbackPrices[selectedSymbol];
-          if (fallbackPrice) {
-            console.log('Using fallback price:', fallbackPrice);
-            setCurrentPrice(fallbackPrice);
-          } else {
-            console.error('No fallback price available for:', selectedSymbol);
-            toast({
-              title: "Error",
-              description: "Could not retrieve price data for this asset.",
-              variant: "destructive",
-            });
-          }
-        }
+    if (step === 5 && selectedSymbol) {
+      const fallbackPrice = fallbackPrices[selectedSymbol];
+      if (fallbackPrice) {
+        console.log('Using price for symbol:', selectedSymbol, fallbackPrice);
+        setCurrentPrice(fallbackPrice);
+      } else {
+        console.error('No price available for:', selectedSymbol);
+        toast({
+          title: "Error",
+          description: "Could not retrieve price data for this asset.",
+          variant: "destructive",
+        });
       }
-    };
-
-    getPriceData();
+    }
   }, [step, selectedSymbol, selectedAssetType, setCurrentPrice, toast]);
 
   return null;
