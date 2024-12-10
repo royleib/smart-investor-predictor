@@ -4,6 +4,8 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from "@/integrations/supabase/client";
 import { StockSelector } from '@/components/StockSelector';
 import { CryptoSelector } from '@/components/CryptoSelector';
+import { AssetSelector } from '@/components/AssetSelector';
+import { PredictionDisplay } from '@/components/PredictionDisplay';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
 
@@ -44,6 +46,43 @@ const Index = () => {
   const handleMarketSelect = (market: string) => {
     setSelectedMarket(market);
     setStep(3);
+  };
+
+  const handleSymbolSelect = (symbol: string) => {
+    setSelectedSymbol(symbol);
+    setStep(5); // Add new step for showing predictions
+  };
+
+  // Mock data for predictions - in a real app, this would come from an API
+  const mockPredictionData = {
+    currentPrice: 150.25,
+    predictions: [
+      {
+        period: '1 Week',
+        price: 155.75,
+        probability: 0.65,
+        trend: 'up' as const,
+      },
+      {
+        period: '1 Month',
+        price: 162.30,
+        probability: 0.58,
+        trend: 'up' as const,
+      },
+      {
+        period: '6 Months',
+        price: 145.80,
+        probability: 0.62,
+        trend: 'down' as const,
+      },
+      {
+        period: '1 Year',
+        price: 180.45,
+        probability: 0.70,
+        trend: 'up' as const,
+      },
+    ],
+    explanation: 'Based on our analysis of market trends, technical indicators, and fundamental factors, we predict a generally positive trajectory for this asset. The short-term outlook shows potential volatility, but long-term indicators suggest strong growth potential.',
   };
 
   if (!session) {
@@ -104,18 +143,7 @@ const Index = () => {
             <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-blue-900">
               Select Asset Type
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {['Stocks', 'Crypto'].map((type) => (
-                <button
-                  key={type}
-                  onClick={() => handleAssetTypeSelect(type)}
-                  className="prediction-card hover:shadow-xl"
-                >
-                  <h3 className="text-xl font-montserrat font-semibold text-blue-900">{type}</h3>
-                  <p className="text-gray-600 mt-2">Get AI predictions for {type.toLowerCase()}</p>
-                </button>
-              ))}
-            </div>
+            <AssetSelector onSelect={handleAssetTypeSelect} />
           </div>
         )}
 
@@ -144,7 +172,7 @@ const Index = () => {
             <h2 className="text-2xl font-montserrat font-semibold p-6 text-center text-blue-900">
               Select Stock from {selectedMarket} Market
             </h2>
-            <StockSelector onSelect={(symbol) => setSelectedSymbol(symbol)} market={selectedMarket} />
+            <StockSelector onSelect={handleSymbolSelect} market={selectedMarket} />
           </div>
         )}
 
@@ -153,8 +181,17 @@ const Index = () => {
             <h2 className="text-2xl font-montserrat font-semibold p-6 text-center text-blue-900">
               Select Cryptocurrency
             </h2>
-            <CryptoSelector onSelect={(symbol) => setSelectedSymbol(symbol)} />
+            <CryptoSelector onSelect={handleSymbolSelect} />
           </div>
+        )}
+
+        {step === 5 && selectedSymbol && (
+          <PredictionDisplay
+            symbol={selectedSymbol}
+            currentPrice={mockPredictionData.currentPrice}
+            predictions={mockPredictionData.predictions}
+            explanation={mockPredictionData.explanation}
+          />
         )}
       </main>
     </div>
