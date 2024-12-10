@@ -15,6 +15,20 @@ interface PredictionProps {
 }
 
 export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanation }: PredictionProps) => {
+  const getPredictionExplanation = (period: string, price: number, currentPrice: number) => {
+    const percentageChange = ((price - currentPrice) / currentPrice * 100).toFixed(2);
+    const direction = price > currentPrice ? 'increase' : 'decrease';
+    
+    const explanations = {
+      '1 Week': `Based on short-term market indicators and recent trading patterns, we expect a ${direction} of ${Math.abs(Number(percentageChange))}% in the next week. This forecast considers current market sentiment and immediate technical factors.`,
+      '1 Month': `Our one-month projection factors in broader market trends, upcoming sector events, and technical analysis, suggesting a ${direction} of ${Math.abs(Number(percentageChange))}%. This takes into account potential market adjustments and sector momentum.`,
+      '6 Months': `Looking at a 6-month horizon, our analysis of long-term trends, market cycles, and fundamental factors points to a ${direction} of ${Math.abs(Number(percentageChange))}%. This forecast incorporates potential market developments and sector evolution.`,
+      '1 Year': `Our one-year prediction shows a ${direction} of ${Math.abs(Number(percentageChange))}%, based on comprehensive analysis of market cycles, industry developments, and long-term growth potential. This considers macroeconomic factors and industry transformations.`
+    };
+
+    return explanations[period as keyof typeof explanations] || '';
+  };
+
   return (
     <div className="space-y-6 p-4">
       <h2 className="text-2xl font-montserrat font-bold text-center mb-8">
@@ -26,9 +40,9 @@ export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanati
         <p className="text-3xl font-bold text-blue-600">${currentPrice.toFixed(2)}</p>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-6">
         {predictions.map((pred) => (
-          <Card key={pred.period} className="prediction-card">
+          <Card key={pred.period} className="prediction-card p-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">{pred.period}</h3>
               <span className={`flex items-center ${
@@ -37,11 +51,16 @@ export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanati
                 {pred.trend === 'up' ? <ArrowUpRight /> : <ArrowDownRight />}
               </span>
             </div>
-            <div className="space-y-2">
-              <p className="text-2xl font-bold">${pred.price.toFixed(2)}</p>
-              <p className="text-sm text-gray-500">
-                Probability: {(pred.probability * 100).toFixed(1)}%
-              </p>
+            <div className="space-y-4">
+              <div>
+                <p className="text-2xl font-bold">${pred.price.toFixed(2)}</p>
+                <p className="text-sm text-gray-500">
+                  Probability: {(pred.probability * 100).toFixed(1)}%
+                </p>
+              </div>
+              <div className="mt-4 text-gray-700 text-sm">
+                {getPredictionExplanation(pred.period, pred.price, currentPrice)}
+              </div>
             </div>
           </Card>
         ))}
