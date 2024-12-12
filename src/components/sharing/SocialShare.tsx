@@ -55,6 +55,7 @@ export const SocialShare = ({ onShareSuccess }: SocialShareProps) => {
         icon={Facebook}
         label="Facebook"
         className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+        variant="default"
       />
       
       <ShareButton
@@ -62,6 +63,7 @@ export const SocialShare = ({ onShareSuccess }: SocialShareProps) => {
         icon={Twitter}
         label="Twitter"
         className="w-full bg-sky-500 hover:bg-sky-600 text-white"
+        variant="default"
       />
       
       <ShareButton
@@ -69,6 +71,7 @@ export const SocialShare = ({ onShareSuccess }: SocialShareProps) => {
         icon={Instagram}
         label="Instagram"
         className="w-full bg-pink-600 hover:bg-pink-700 text-white"
+        variant="default"
       />
       
       <ShareButton
