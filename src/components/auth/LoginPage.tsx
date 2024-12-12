@@ -28,10 +28,9 @@ export const LoginPage = () => {
                 },
               }}
               providers={[]}
-              options={{
-                metadata: {
-                  full_name: undefined // This enables the full name field
-                }
+              view="sign_up"
+              additionalData={{
+                full_name: undefined
               }}
             />
           </div>
