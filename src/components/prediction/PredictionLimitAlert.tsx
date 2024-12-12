@@ -38,14 +38,15 @@ export const PredictionLimitAlert = ({ userId, onClose }: PredictionLimitAlertPr
   };
 
   const handleFacebookShare = () => {
-    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+    const shareText = "Wow! This AI stock prediction is awesome. Try it out!";
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(shareText)}`;
     window.open(url, '_blank', 'width=600,height=400');
     handleShareSuccess();
   };
 
   const handleTwitterShare = () => {
-    const text = 'Check out this amazing AI-powered market prediction tool!';
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
+    const shareText = "Wow! This AI stock prediction is awesome. Try it out!";
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(window.location.href)}`;
     window.open(url, '_blank', 'width=600,height=400');
     handleShareSuccess();
   };
@@ -53,7 +54,8 @@ export const PredictionLimitAlert = ({ userId, onClose }: PredictionLimitAlertPr
   const handleInstagramShare = () => {
     // Since Instagram doesn't have a direct web share API,
     // we'll copy the link and show instructions
-    navigator.clipboard.writeText(window.location.href);
+    const shareText = "Wow! This AI stock prediction is awesome. Try it out!\n\n";
+    navigator.clipboard.writeText(shareText + window.location.href);
     toast({
       title: "Link copied!",
       description: "Open Instagram and paste the link in your story or post.",
@@ -63,7 +65,8 @@ export const PredictionLimitAlert = ({ userId, onClose }: PredictionLimitAlertPr
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      const shareText = "Wow! This AI stock prediction is awesome. Try it out!\n\n";
+      await navigator.clipboard.writeText(shareText + window.location.href);
       toast({
         title: "Link copied to clipboard!",
         description: "Share it with your friends to get unlimited predictions.",
