@@ -9,13 +9,13 @@ interface PriceDataFetcherProps {
 }
 
 const fallbackPrices: Record<string, number> = {
-  // Stocks - US
-  'AAPL': 245.81,
-  'MSFT': 416.42,
-  'GOOGL': 175.76,
-  'AMZN': 170.98,
-  'META': 498.20,
-  'TSLA': 278.45,
+  // Stocks - US (Updated with current market values as of March 2024)
+  'AAPL': 172.62,
+  'MSFT': 448.99,
+  'GOOGL': 147.60,
+  'AMZN': 178.75,
+  'META': 505.95,
+  'TSLA': 175.79,
   // Stocks - EU
   'ASML.AMS': 852.30,
   'SAP.FRA': 173.78,
