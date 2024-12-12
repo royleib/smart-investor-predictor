@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface PriceDataFetcherProps {
   step: number;
@@ -8,8 +9,9 @@ interface PriceDataFetcherProps {
   setCurrentPrice: (price: number | null) => void;
 }
 
+// Fallback prices updated to March 2024 values
 const fallbackPrices: Record<string, number> = {
-  // Stocks - US (Updated with current market values as of March 2024)
+  // Stocks - US
   'AAPL': 172.62,
   'MSFT': 448.99,
   'GOOGL': 147.60,
@@ -43,20 +45,58 @@ export const PriceDataFetcher = ({ step, selectedSymbol, selectedAssetType, setC
   const { toast } = useToast();
 
   useEffect(() => {
-    if (step === 5 && selectedSymbol) {
-      const fallbackPrice = fallbackPrices[selectedSymbol];
-      if (fallbackPrice) {
-        console.log('Using price for symbol:', selectedSymbol, fallbackPrice);
-        setCurrentPrice(fallbackPrice);
-      } else {
-        console.error('No price available for:', selectedSymbol);
-        toast({
-          title: "Error",
-          description: "Could not retrieve price data for this asset.",
-          variant: "destructive",
-        });
+    const fetchPrice = async () => {
+      if (step === 5 && selectedSymbol) {
+        try {
+          // Only fetch real-time prices for US stocks for now
+          if (selectedAssetType === 'Stocks' && !selectedSymbol.includes('.')) {
+            const { data, error } = await supabase.functions.invoke('fetch-stock-price', {
+              body: { symbol: selectedSymbol }
+            });
+
+            if (error) {
+              console.error('Error fetching price:', error);
+              throw error;
+            }
+
+            if (data.price) {
+              console.log('Real-time price for', selectedSymbol, ':', data.price);
+              setCurrentPrice(data.price);
+              return;
+            }
+          }
+
+          // Fallback to stored prices
+          const fallbackPrice = fallbackPrices[selectedSymbol];
+          if (fallbackPrice) {
+            console.log('Using fallback price for', selectedSymbol, ':', fallbackPrice);
+            setCurrentPrice(fallbackPrice);
+          } else {
+            console.error('No price available for:', selectedSymbol);
+            toast({
+              title: "Error",
+              description: "Could not retrieve price data for this asset.",
+              variant: "destructive",
+            });
+          }
+        } catch (error) {
+          console.error('Error in price fetching:', error);
+          const fallbackPrice = fallbackPrices[selectedSymbol];
+          if (fallbackPrice) {
+            console.log('Using fallback price after error for', selectedSymbol, ':', fallbackPrice);
+            setCurrentPrice(fallbackPrice);
+          } else {
+            toast({
+              title: "Error",
+              description: "Could not retrieve price data for this asset.",
+              variant: "destructive",
+            });
+          }
+        }
       }
-    }
+    };
+
+    fetchPrice();
   }, [step, selectedSymbol, selectedAssetType, setCurrentPrice, toast]);
 
   return null;
