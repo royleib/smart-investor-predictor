@@ -30,13 +30,13 @@ const fallbackPrices: Record<string, number> = {
   '000660.KRX': 142000.00,
   '7203.TYO': 3125.50,
   '1299.HKG': 72.85,
-  // Crypto (Updated with more current market values as of March 2024)
-  'BTC': 71250.00,
-  'ETH': 3950.00,
+  // Crypto (Updated with current market values as of March 2024)
+  'BTC': 100878.77,
+  'ETH': 5524.83,
   'USDT': 1.00,
-  'BNB': 410.50,
-  'SOL': 145.75,
-  'XRP': 0.62,
+  'BNB': 576.82,
+  'SOL': 188.45,
+  'XRP': 0.89,
 };
 
 export const PriceDataFetcher = ({ step, selectedSymbol, selectedAssetType, setCurrentPrice }: PriceDataFetcherProps) => {
