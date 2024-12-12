@@ -1,6 +1,7 @@
 import { Facebook, Twitter, Instagram, Copy } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { ShareButton } from "./ShareButton";
+import { useState } from 'react';
 
 interface SocialShareProps {
   onShareSuccess: () => void;
@@ -8,25 +9,33 @@ interface SocialShareProps {
 
 export const SocialShare = ({ onShareSuccess }: SocialShareProps) => {
   const { toast } = useToast();
+  const [isSharing, setIsSharing] = useState(false);
   const shareText = "Wow! This AI stock prediction is awesome. Try it out!";
-  const previewImage = "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80"; // Stock market visualization image
   
+  const handleShareSuccess = () => {
+    if (isSharing) return;
+    setIsSharing(true);
+    
+    // Simulate share completion after 30 seconds
+    setTimeout(() => {
+      setIsSharing(false);
+      onShareSuccess();
+    }, 30000);
+  };
+
   const handleFacebookShare = () => {
     const url = new URL('https://www.facebook.com/sharer/sharer.php');
     url.searchParams.append('u', window.location.href);
     url.searchParams.append('quote', shareText);
-    url.searchParams.append('picture', previewImage);
-    url.searchParams.append('description', 'Get AI-powered stock predictions instantly');
-    url.searchParams.append('title', 'Market Prediction AI');
     
     window.open(url.toString(), '_blank', 'width=600,height=400');
-    onShareSuccess();
+    handleShareSuccess();
   };
 
   const handleTwitterShare = () => {
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(window.location.href)}`;
     window.open(url, '_blank', 'width=600,height=400');
-    onShareSuccess();
+    handleShareSuccess();
   };
 
   const handleInstagramShare = () => {
@@ -35,7 +44,7 @@ export const SocialShare = ({ onShareSuccess }: SocialShareProps) => {
       title: "Link copied!",
       description: "Open Instagram and paste the link in your story or post.",
     });
-    onShareSuccess();
+    handleShareSuccess();
   };
 
   const handleCopyLink = async () => {
@@ -45,7 +54,7 @@ export const SocialShare = ({ onShareSuccess }: SocialShareProps) => {
         title: "Link copied to clipboard!",
         description: "Share it with your friends to get unlimited predictions.",
       });
-      onShareSuccess();
+      handleShareSuccess();
     } catch (error) {
       toast({
         title: "Error copying link",
@@ -88,6 +97,12 @@ export const SocialShare = ({ onShareSuccess }: SocialShareProps) => {
         className="w-full"
         variant="outline"
       />
+      
+      {isSharing && (
+        <div className="col-span-2 text-center text-sm text-gray-500">
+          Please wait while we verify your share...
+        </div>
+      )}
     </div>
   );
 };
