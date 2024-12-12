@@ -9,10 +9,17 @@ interface SocialShareProps {
 export const SocialShare = ({ onShareSuccess }: SocialShareProps) => {
   const { toast } = useToast();
   const shareText = "Wow! This AI stock prediction is awesome. Try it out!";
-
+  const previewImage = "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80"; // Stock market visualization image
+  
   const handleFacebookShare = () => {
-    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(shareText)}`;
-    window.open(url, '_blank', 'width=600,height=400');
+    const url = new URL('https://www.facebook.com/sharer/sharer.php');
+    url.searchParams.append('u', window.location.href);
+    url.searchParams.append('quote', shareText);
+    url.searchParams.append('picture', previewImage);
+    url.searchParams.append('description', 'Get AI-powered stock predictions instantly');
+    url.searchParams.append('title', 'Market Prediction AI');
+    
+    window.open(url.toString(), '_blank', 'width=600,height=400');
     onShareSuccess();
   };
 
