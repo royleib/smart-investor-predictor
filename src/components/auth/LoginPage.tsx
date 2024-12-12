@@ -28,6 +28,11 @@ export const LoginPage = () => {
                 },
               }}
               providers={[]}
+              options={{
+                metadata: {
+                  full_name: undefined // This enables the full name field
+                }
+              }}
             />
           </div>
         </div>

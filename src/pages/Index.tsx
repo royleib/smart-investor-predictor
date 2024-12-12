@@ -9,6 +9,8 @@ import { LogOut } from 'lucide-react';
 import { LoginPage } from '@/components/auth/LoginPage';
 import { PriceDataFetcher } from '@/components/prediction/PriceDataFetcher';
 import { generatePredictions } from '@/components/prediction/PredictionGenerator';
+import { PredictionLimitAlert } from '@/components/prediction/PredictionLimitAlert';
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [session, setSession] = useState<any>(null);
@@ -17,6 +19,8 @@ const Index = () => {
   const [selectedMarket, setSelectedMarket] = useState('');
   const [selectedSymbol, setSelectedSymbol] = useState('');
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
+  const [showLimitAlert, setShowLimitAlert] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -50,7 +54,33 @@ const Index = () => {
     setStep(3);
   };
 
-  const handleSymbolSelect = (symbol: string) => {
+  const handleSymbolSelect = async (symbol: string) => {
+    if (session?.user) {
+      const { count } = await supabase
+        .from('user_predictions')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', session.user.id);
+
+      if (count !== null && count >= 2) {
+        setShowLimitAlert(true);
+        return;
+      }
+
+      // Insert the prediction
+      const { error } = await supabase
+        .from('user_predictions')
+        .insert([{ user_id: session.user.id, symbol }]);
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to save prediction. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
     setSelectedSymbol(symbol);
     setStep(5);
   };
@@ -61,6 +91,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {showLimitAlert && (
+        <PredictionLimitAlert 
+          userId={session.user.id} 
+          onClose={() => setShowLimitAlert(false)} 
+        />
+      )}
+      
       <header className="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-6 px-4 shadow-lg">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-3xl font-montserrat font-bold">
