@@ -5,7 +5,7 @@ import { CryptoSelector } from '@/components/CryptoSelector';
 import { AssetSelector } from '@/components/AssetSelector';
 import { PredictionDisplay } from '@/components/PredictionDisplay';
 import { Button } from '@/components/ui/button';
-import { LogOut } from 'lucide-react';
+import { LogOut, TrendingUp, Globe, Award } from 'lucide-react';
 import { LoginPage } from '@/components/auth/LoginPage';
 import { PriceDataFetcher } from '@/components/prediction/PriceDataFetcher';
 import { generatePredictions } from '@/components/prediction/PredictionGenerator';
@@ -89,8 +89,34 @@ const Index = () => {
     return <LoginPage />;
   }
 
+  const renderFeatures = () => (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 px-4">
+      <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all">
+        <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+          <TrendingUp className="h-6 w-6 text-purple-600" />
+        </div>
+        <h3 className="text-xl font-montserrat font-semibold mb-2">Smart Predictions</h3>
+        <p className="text-gray-600">Advanced AI algorithms for accurate market predictions</p>
+      </div>
+      <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all">
+        <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+          <Globe className="h-6 w-6 text-purple-600" />
+        </div>
+        <h3 className="text-xl font-montserrat font-semibold mb-2">Global Markets</h3>
+        <p className="text-gray-600">Access predictions for markets worldwide</p>
+      </div>
+      <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all">
+        <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+          <Award className="h-6 w-6 text-purple-600" />
+        </div>
+        <h3 className="text-xl font-montserrat font-semibold mb-2">Expert Analysis</h3>
+        <p className="text-gray-600">Professional-grade market insights</p>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#7E69AB] to-[#D6BCFA]">
       {showLimitAlert && (
         <PredictionLimitAlert 
           userId={session.user.id} 
@@ -98,14 +124,14 @@ const Index = () => {
         />
       )}
       
-      <header className="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-6 px-4 shadow-lg">
+      <header className="bg-white/10 backdrop-blur-md border-b border-white/20 text-white py-6 px-4 shadow-lg">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-3xl font-montserrat font-bold">
             Market Prediction AI
           </h1>
           <Button 
-            variant="outline" 
-            className="text-white border-white hover:bg-white/10"
+            variant="ghost" 
+            className="text-white hover:bg-white/20"
             onClick={handleSignOut}
           >
             <LogOut className="mr-2 h-4 w-4" />
@@ -123,17 +149,28 @@ const Index = () => {
         />
 
         {step === 1 && (
-          <div className="bg-white rounded-xl shadow-md p-8">
-            <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-blue-900">
-              Select Asset Type
-            </h2>
-            <AssetSelector onSelect={handleAssetTypeSelect} />
+          <div className="space-y-8">
+            <div className="text-center text-white mb-12">
+              <h2 className="text-4xl font-montserrat font-bold mb-4">
+                Welcome to Smart Market Predictions
+              </h2>
+              <p className="text-xl opacity-90">
+                Choose your investment category and get AI-powered insights
+              </p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-8">
+              <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-white">
+                Select Asset Type
+              </h2>
+              <AssetSelector onSelect={handleAssetTypeSelect} />
+            </div>
+            {renderFeatures()}
           </div>
         )}
 
         {step === 2 && selectedAssetType === 'Stocks' && (
-          <div className="bg-white rounded-xl shadow-md p-8">
-            <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-blue-900">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-8">
+            <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-white">
               Select Market
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -141,9 +178,9 @@ const Index = () => {
                 <button
                   key={market}
                   onClick={() => handleMarketSelect(market)}
-                  className="prediction-card hover:shadow-xl"
+                  className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
                 >
-                  <h3 className="text-xl font-montserrat font-semibold text-blue-900">{market}</h3>
+                  <h3 className="text-xl font-montserrat font-semibold text-gray-800">{market}</h3>
                   <p className="text-gray-600 mt-2">{market} Market</p>
                 </button>
               ))}
@@ -152,8 +189,8 @@ const Index = () => {
         )}
 
         {step === 3 && selectedMarket && (
-          <div className="bg-white rounded-xl shadow-md">
-            <h2 className="text-2xl font-montserrat font-semibold p-6 text-center text-blue-900">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl border border-white/20">
+            <h2 className="text-2xl font-montserrat font-semibold p-6 text-center text-white">
               Select Stock from {selectedMarket} Market
             </h2>
             <StockSelector onSelect={handleSymbolSelect} market={selectedMarket} />
@@ -161,8 +198,8 @@ const Index = () => {
         )}
 
         {step === 4 && selectedAssetType === 'Crypto' && (
-          <div className="bg-white rounded-xl shadow-md">
-            <h2 className="text-2xl font-montserrat font-semibold p-6 text-center text-blue-900">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl border border-white/20">
+            <h2 className="text-2xl font-montserrat font-semibold p-6 text-center text-white">
               Select Cryptocurrency
             </h2>
             <CryptoSelector onSelect={handleSymbolSelect} />
@@ -170,9 +207,11 @@ const Index = () => {
         )}
 
         {step === 5 && selectedSymbol && currentPrice && (
-          <PredictionDisplay
-            {...generatePredictions(currentPrice, selectedSymbol, selectedAssetType)}
-          />
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-8">
+            <PredictionDisplay
+              {...generatePredictions(currentPrice, selectedSymbol, selectedAssetType)}
+            />
+          </div>
         )}
       </main>
     </div>

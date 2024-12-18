@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, TrendingUp } from 'lucide-react';
 
 const stocksByMarket = {
   US: [
@@ -37,17 +37,20 @@ export const StockSelector = ({ onSelect, market }: StockSelectorProps) => {
   const stocks = stocksByMarket[market as keyof typeof stocksByMarket] || [];
 
   return (
-    <div className="space-y-4 p-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
       {stocks.map((stock) => (
         <Card 
           key={stock.symbol}
-          className="cursor-pointer hover:shadow-lg transition-shadow"
+          className="cursor-pointer bg-white/80 backdrop-blur-sm border-white/20 hover:shadow-lg transition-all hover:scale-105"
           onClick={() => onSelect(stock.symbol)}
         >
-          <CardContent className="flex items-center justify-between p-6">
-            <div>
-              <h3 className="text-xl font-montserrat font-semibold">{stock.name}</h3>
-              <p className="text-sm text-gray-500">{stock.symbol} - {stock.description}</p>
+          <CardContent className="flex items-center p-6">
+            <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+              <TrendingUp className="h-6 w-6 text-purple-600" />
+            </div>
+            <div className="flex-grow">
+              <h3 className="text-xl font-montserrat font-semibold text-gray-800">{stock.name}</h3>
+              <p className="text-sm text-gray-600">{stock.symbol} - {stock.description}</p>
             </div>
             <ChevronRight className="h-6 w-6 text-gray-400" />
           </CardContent>
