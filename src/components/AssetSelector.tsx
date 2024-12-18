@@ -18,18 +18,18 @@ export const AssetSelector = ({ onSelect }: AssetSelectorProps) => {
       {assetTypes.map((type) => (
         <Card 
           key={type.id}
-          className="cursor-pointer hover:shadow-lg transition-all duration-300 border border-gray-200"
+          className="cursor-pointer hover:shadow-md transition-all duration-300 border border-[#E2E8F0] bg-white"
           onClick={() => onSelect(type.id)}
         >
           <CardContent className="flex items-center p-6">
-            <div className="h-12 w-12 bg-gray-100 rounded-full flex items-center justify-center mr-4">
-              <type.icon className="h-6 w-6 text-gray-700" />
+            <div className="h-12 w-12 bg-[#F8FAFC] rounded-full flex items-center justify-center mr-4">
+              <type.icon className="h-6 w-6 text-[#475569]" />
             </div>
             <div className="flex-grow">
-              <h3 className="text-xl font-montserrat font-semibold text-gray-900">{type.name}</h3>
-              <p className="text-sm text-gray-600">{type.description}</p>
+              <h3 className="text-xl font-montserrat font-semibold text-[#334155]">{type.name}</h3>
+              <p className="text-sm text-[#64748B]">{type.description}</p>
             </div>
-            <ChevronRight className="h-6 w-6 text-gray-400" />
+            <ChevronRight className="h-6 w-6 text-[#94A3B8]" />
           </CardContent>
         </Card>
       ))}

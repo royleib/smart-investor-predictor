@@ -24,13 +24,13 @@ export const Features = () => {
       {features.map((feature, index) => (
         <div 
           key={index}
-          className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 transform hover:shadow-md transition-all duration-300"
+          className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-[#E2E8F0]"
         >
-          <div className="h-12 w-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-            <feature.icon className="h-6 w-6 text-gray-700" />
+          <div className="h-12 w-12 bg-[#F8FAFC] rounded-full flex items-center justify-center mb-4">
+            <feature.icon className="h-6 w-6 text-[#475569]" />
           </div>
-          <h3 className="text-xl font-montserrat font-semibold mb-2 text-gray-900">{feature.title}</h3>
-          <p className="text-gray-600">{feature.description}</p>
+          <h3 className="text-xl font-montserrat font-semibold mb-2 text-[#334155]">{feature.title}</h3>
+          <p className="text-[#64748B]">{feature.description}</p>
         </div>
       ))}
     </div>
