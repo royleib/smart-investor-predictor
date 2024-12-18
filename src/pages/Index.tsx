@@ -4,15 +4,15 @@ import { StockSelector } from '@/components/StockSelector';
 import { CryptoSelector } from '@/components/CryptoSelector';
 import { AssetSelector } from '@/components/AssetSelector';
 import { PredictionDisplay } from '@/components/PredictionDisplay';
-import { Button } from '@/components/ui/button';
-import { LogOut, TrendingUp, Globe, Award } from 'lucide-react';
 import { LoginPage } from '@/components/auth/LoginPage';
 import { PriceDataFetcher } from '@/components/prediction/PriceDataFetcher';
 import { generatePredictions } from '@/components/prediction/PredictionGenerator';
 import { PredictionLimitAlert } from '@/components/prediction/PredictionLimitAlert';
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from 'react-router-dom';
-import { Logo } from '@/components/ui/Logo';
+import { Features } from '@/components/home/Features';
+import { Header } from '@/components/home/Header';
+import { Welcome } from '@/components/home/Welcome';
 
 const Index = () => {
   const [session, setSession] = useState<any>(null);
@@ -26,7 +26,6 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Initial session check
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       setSession(currentSession);
       if (!currentSession) {
@@ -34,7 +33,6 @@ const Index = () => {
       }
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, currentSession) => {
@@ -43,7 +41,6 @@ const Index = () => {
       }
       
       if (_event === 'SIGNED_OUT') {
-        // Clear any local storage or state
         setSession(null);
         setStep(1);
         setSelectedAssetType('');
@@ -55,7 +52,6 @@ const Index = () => {
 
       setSession(currentSession);
       
-      // If there's no session, redirect to login
       if (!currentSession) {
         handleSignOut();
       }
@@ -144,36 +140,9 @@ const Index = () => {
     }
   };
 
-  // If no session, show login page
   if (!session) {
     return <LoginPage />;
   }
-
-  const renderFeatures = () => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 px-4">
-      <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all">
-        <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-          <TrendingUp className="h-6 w-6 text-blue-600" />
-        </div>
-        <h3 className="text-xl font-montserrat font-semibold mb-2">Smart Predictions</h3>
-        <p className="text-gray-600">Advanced AI algorithms for accurate market predictions</p>
-      </div>
-      <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all">
-        <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-          <Globe className="h-6 w-6 text-blue-600" />
-        </div>
-        <h3 className="text-xl font-montserrat font-semibold mb-2">Global Markets</h3>
-        <p className="text-gray-600">Access predictions for markets worldwide</p>
-      </div>
-      <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all">
-        <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-          <Award className="h-6 w-6 text-blue-600" />
-        </div>
-        <h3 className="text-xl font-montserrat font-semibold mb-2">Expert Analysis</h3>
-        <p className="text-gray-600">Professional-grade market insights</p>
-      </div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1E3A8A] via-[#1E40AF] to-[#3B82F6]">
@@ -184,19 +153,7 @@ const Index = () => {
         />
       )}
       
-      <header className="bg-white/10 backdrop-blur-md border-b border-white/20 text-white py-6 px-4 shadow-lg">
-        <div className="container mx-auto flex justify-between items-center">
-          <Logo />
-          <Button 
-            variant="ghost" 
-            className="text-white hover:bg-white/20"
-            onClick={handleSignOut}
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Sign Out
-          </Button>
-        </div>
-      </header>
+      <Header onSignOut={handleSignOut} />
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <PriceDataFetcher
@@ -208,21 +165,14 @@ const Index = () => {
 
         {step === 1 && (
           <div className="space-y-8">
-            <div className="text-center text-white mb-12">
-              <h2 className="text-4xl font-montserrat font-bold mb-4">
-                Welcome to Smart Market Predictions
-              </h2>
-              <p className="text-xl opacity-90">
-                Choose your investment category and get AI-powered insights
-              </p>
-            </div>
+            <Welcome />
             <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-8">
               <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-white">
                 Select Asset Type
               </h2>
               <AssetSelector onSelect={handleAssetTypeSelect} />
             </div>
-            {renderFeatures()}
+            <Features />
           </div>
         )}
 
