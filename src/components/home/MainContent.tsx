@@ -8,6 +8,7 @@ import { PredictionLimitAlert } from '@/components/prediction/PredictionLimitAle
 import { generatePredictions } from '@/components/prediction/PredictionGenerator';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Welcome } from '@/components/home/Welcome';
 
 interface MainContentProps {
   step: number;
