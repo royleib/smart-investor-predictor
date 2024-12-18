@@ -52,7 +52,7 @@ npm run dev
 
 ## What technologies are used for this project?
 
-This project is built with .
+This project is built with:
 
 - Vite
 - TypeScript
@@ -62,8 +62,38 @@ This project is built with .
 
 ## How can I deploy this project?
 
+### Option 1: Deploy with Lovable
+
 Simply open [Lovable](https://lovable.dev/projects/b979800e-f822-4fc5-93bf-018828dca8d4) and click on Share -> Publish.
 
-## I want to use a custom domain - is that possible?
+### Option 2: Deploy with Netlify (Recommended for custom domains)
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+1. Push your code to a Git repository (GitHub, GitLab, or Bitbucket)
+
+2. Deploy on Netlify:
+   - Sign up/Login to [Netlify](https://netlify.com)
+   - Click "Add new site" > "Import an existing project"
+   - Connect your Git repository
+   - Configure build settings:
+     - Build command: `npm run build`
+     - Publish directory: `dist`
+
+3. Set up your custom domain:
+   - Go to "Domain settings" in your Netlify site dashboard
+   - Click "Add custom domain"
+   - Follow Netlify's DNS configuration instructions
+   - Update your domain's DNS settings as per Netlify's instructions
+
+4. Environment Variables:
+   Make sure to add these environment variables in your Netlify dashboard (Site settings > Environment variables):
+   ```
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+### Important Notes:
+- Always ensure your environment variables are properly set in your deployment platform
+- Make sure your Supabase project's URL is allowed in the API settings
+- Test the deployment in a staging environment first if possible
+
+For more detailed deployment instructions, visit our docs: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
