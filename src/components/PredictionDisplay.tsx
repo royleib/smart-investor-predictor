@@ -71,12 +71,13 @@ export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanati
         <p className="text-gray-700">{explanation}</p>
       </Card>
 
-      <div className="mt-8 text-center">
+      <div className="mt-8">
         <Button 
-          className="gradient-bg text-white"
+          className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-300 group"
           onClick={() => window.open('https://med.etoro.com/B12087_A71830_TClick.aspx', '_blank')}
         >
-          Start Trading on eToro <ExternalLink className="ml-2 h-4 w-4" />
+          Start Trading {symbol} on eToro
+          <ExternalLink className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
         </Button>
       </div>
     </div>
