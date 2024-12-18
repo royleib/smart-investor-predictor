@@ -12,6 +12,7 @@ import { generatePredictions } from '@/components/prediction/PredictionGenerator
 import { PredictionLimitAlert } from '@/components/prediction/PredictionLimitAlert';
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from 'react-router-dom';
+import { Logo } from '@/components/ui/Logo';
 
 const Index = () => {
   const [session, setSession] = useState<any>(null);
@@ -151,22 +152,22 @@ const Index = () => {
   const renderFeatures = () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 px-4">
       <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all">
-        <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-          <TrendingUp className="h-6 w-6 text-purple-600" />
+        <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+          <TrendingUp className="h-6 w-6 text-blue-600" />
         </div>
         <h3 className="text-xl font-montserrat font-semibold mb-2">Smart Predictions</h3>
         <p className="text-gray-600">Advanced AI algorithms for accurate market predictions</p>
       </div>
       <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all">
-        <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-          <Globe className="h-6 w-6 text-purple-600" />
+        <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+          <Globe className="h-6 w-6 text-blue-600" />
         </div>
         <h3 className="text-xl font-montserrat font-semibold mb-2">Global Markets</h3>
         <p className="text-gray-600">Access predictions for markets worldwide</p>
       </div>
       <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all">
-        <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-          <Award className="h-6 w-6 text-purple-600" />
+        <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+          <Award className="h-6 w-6 text-blue-600" />
         </div>
         <h3 className="text-xl font-montserrat font-semibold mb-2">Expert Analysis</h3>
         <p className="text-gray-600">Professional-grade market insights</p>
@@ -175,7 +176,7 @@ const Index = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#7E69AB] to-[#D6BCFA]">
+    <div className="min-h-screen bg-gradient-to-br from-[#1E3A8A] via-[#1E40AF] to-[#3B82F6]">
       {showLimitAlert && (
         <PredictionLimitAlert 
           userId={session.user.id} 
@@ -185,9 +186,7 @@ const Index = () => {
       
       <header className="bg-white/10 backdrop-blur-md border-b border-white/20 text-white py-6 px-4 shadow-lg">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-3xl font-montserrat font-bold">
-            Market Prediction AI
-          </h1>
+          <Logo />
           <Button 
             variant="ghost" 
             className="text-white hover:bg-white/20"
