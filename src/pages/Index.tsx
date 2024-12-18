@@ -11,6 +11,7 @@ import { PriceDataFetcher } from '@/components/prediction/PriceDataFetcher';
 import { generatePredictions } from '@/components/prediction/PredictionGenerator';
 import { PredictionLimitAlert } from '@/components/prediction/PredictionLimitAlert';
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
   const [session, setSession] = useState<any>(null);
@@ -21,23 +22,64 @@ const Index = () => {
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
   const [showLimitAlert, setShowLimitAlert] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
+    // Initial session check
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      setSession(currentSession);
+      if (!currentSession) {
+        handleSignOut();
+      }
     });
 
+    // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+    } = supabase.auth.onAuthStateChange(async (_event, currentSession) => {
+      if (_event === 'TOKEN_REFRESHED') {
+        console.log('Token refreshed successfully');
+      }
+      
+      if (_event === 'SIGNED_OUT') {
+        // Clear any local storage or state
+        setSession(null);
+        setStep(1);
+        setSelectedAssetType('');
+        setSelectedMarket('');
+        setSelectedSymbol('');
+        setCurrentPrice(null);
+        navigate('/');
+      }
+
+      setSession(currentSession);
+      
+      // If there's no session, redirect to login
+      if (!currentSession) {
+        handleSignOut();
+      }
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account.",
+      });
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast({
+        title: "Error signing out",
+        description: "There was a problem signing out. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleAssetTypeSelect = (type: string) => {
@@ -55,7 +97,17 @@ const Index = () => {
   };
 
   const handleSymbolSelect = async (symbol: string) => {
-    if (session?.user) {
+    if (!session?.user) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to continue.",
+        variant: "destructive",
+      });
+      handleSignOut();
+      return;
+    }
+
+    try {
       const { count } = await supabase
         .from('user_predictions')
         .select('*', { count: 'exact', head: true })
@@ -66,7 +118,6 @@ const Index = () => {
         return;
       }
 
-      // Insert the prediction
       const { error } = await supabase
         .from('user_predictions')
         .insert([{ user_id: session.user.id, symbol }]);
@@ -79,12 +130,20 @@ const Index = () => {
         });
         return;
       }
-    }
 
-    setSelectedSymbol(symbol);
-    setStep(5);
+      setSelectedSymbol(symbol);
+      setStep(5);
+    } catch (error) {
+      console.error('Error handling symbol selection:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
+  // If no session, show login page
   if (!session) {
     return <LoginPage />;
   }
