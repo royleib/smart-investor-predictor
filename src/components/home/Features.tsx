@@ -24,12 +24,12 @@ export const Features = () => {
       {features.map((feature, index) => (
         <div 
           key={index}
-          className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300"
+          className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 transform hover:shadow-md transition-all duration-300"
         >
-          <div className="h-12 w-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mb-4">
-            <feature.icon className="h-6 w-6 text-blue-600" />
+          <div className="h-12 w-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+            <feature.icon className="h-6 w-6 text-gray-700" />
           </div>
-          <h3 className="text-xl font-montserrat font-semibold mb-2 text-gray-800">{feature.title}</h3>
+          <h3 className="text-xl font-montserrat font-semibold mb-2 text-gray-900">{feature.title}</h3>
           <p className="text-gray-600">{feature.description}</p>
         </div>
       ))}
