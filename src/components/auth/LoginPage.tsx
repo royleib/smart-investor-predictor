@@ -1,37 +1,75 @@
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from "@/integrations/supabase/client";
+import { motion } from "framer-motion";
 
 export const LoginPage = () => {
   return (
-    <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-      <div className="p-8">
-        <h1 className="text-3xl font-montserrat font-bold text-center mb-2 text-gray-900">
-          Get Started
-        </h1>
-        <p className="text-gray-600 text-center mb-8">
-          Sign in to access advanced market predictions powered by artificial intelligence
-        </p>
-        <Auth
-          supabaseClient={supabase}
-          appearance={{
-            theme: ThemeSupa,
-            variables: {
-              default: {
-                colors: {
-                  brand: '#222222',
-                  brandAccent: '#333333',
-                },
-              },
-            },
-          }}
-          providers={[]}
-          view="sign_up"
-          additionalData={{
-            full_name: undefined
-          }}
-        />
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-md mx-auto"
+    >
+      <div className="glass-effect rounded-2xl shadow-xl overflow-hidden transform hover:scale-[1.01] transition-all duration-300">
+        <div className="p-8">
+          <div className="space-y-2 mb-8">
+            <h1 className="text-3xl font-montserrat font-bold text-center bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+              Get Started Today
+            </h1>
+            <p className="text-blue-600/80 text-center font-medium">
+              Join thousands of traders using AI-powered market predictions
+            </p>
+          </div>
+          
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-white opacity-50 blur-xl"></div>
+            <div className="relative">
+              <Auth
+                supabaseClient={supabase}
+                appearance={{
+                  theme: ThemeSupa,
+                  variables: {
+                    default: {
+                      colors: {
+                        brand: '#2563eb',
+                        brandAccent: '#1d4ed8',
+                        brandButtonText: 'white',
+                        defaultButtonBackground: '#f8fafc',
+                        defaultButtonBackgroundHover: '#f1f5f9',
+                        inputBackground: 'white',
+                        inputBorder: '#e2e8f0',
+                        inputBorderHover: '#94a3b8',
+                        inputBorderFocus: '#2563eb',
+                      },
+                      borderWidths: {
+                        buttonBorderWidth: '1px',
+                        inputBorderWidth: '1px',
+                      },
+                      radii: {
+                        borderRadiusButton: '0.75rem',
+                        buttonBorderRadius: '0.75rem',
+                        inputBorderRadius: '0.75rem',
+                      },
+                    },
+                  },
+                  className: {
+                    button: 'hover:scale-[1.02] transform transition-all duration-200',
+                    container: 'gap-4',
+                    label: 'font-medium text-blue-900/80',
+                    input: 'shadow-sm',
+                  },
+                }}
+                providers={[]}
+                view="sign_up"
+                additionalData={{
+                  full_name: undefined
+                }}
+              />
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
