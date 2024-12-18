@@ -35,26 +35,28 @@
   }
 }
 
-.prediction-card {
-  @apply bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-blue-100/20;
-}
+@layer components {
+  .prediction-card {
+    @apply bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-blue-100/20;
+  }
 
-.gradient-bg {
-  @apply bg-gradient-to-br from-blue-50 to-slate-50;
-}
+  .gradient-bg {
+    @apply bg-gradient-to-br from-blue-50 to-slate-50;
+  }
 
-.card-3d {
-  @apply hover:translate-y-[-2px] hover:shadow-lg transition-all duration-300 transform perspective-1000;
-}
+  .card-3d {
+    @apply hover:translate-y-[-2px] hover:shadow-lg transition-all duration-300 transform;
+  }
 
-.glass-effect {
-  @apply bg-white/70 backdrop-blur-md border border-white/20;
-}
+  .glass-effect {
+    @apply bg-white/70 backdrop-blur-md border border-white/20;
+  }
 
-.blue-gradient {
-  @apply bg-gradient-to-r from-blue-500 to-blue-600 text-white;
-}
+  .blue-gradient {
+    @apply bg-gradient-to-r from-blue-500 to-blue-600 text-white;
+  }
 
-.hover-lift {
-  @apply transition-transform duration-300 hover:-translate-y-1;
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1;
+  }
 }
