@@ -61,15 +61,15 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <Header onSignOut={handleSignOut} isAuthenticated={!!session} currentLang={lang as Language} />
       
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="container mx-auto px-4 py-4 md:py-8 max-w-4xl">
         {!session ? (
-          <>
+          <div className="space-y-6 md:space-y-8">
             <Welcome lang={lang as Language} />
-            <div className="mb-12">
+            <div className="mb-8 md:mb-12">
               <Features lang={lang as Language} />
             </div>
             <LoginPage lang={lang as Language} />
-          </>
+          </div>
         ) : (
           <MainContent 
             step={step}
