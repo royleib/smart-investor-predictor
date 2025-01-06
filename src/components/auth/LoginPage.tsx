@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from 'react';
 import { translations, type Language } from "@/utils/i18n";
-import { AuthChangeEvent } from '@supabase/supabase-js';
+import { AuthError, AuthChangeEvent } from '@supabase/supabase-js';
 
 interface LoginPageProps {
   lang: Language;
@@ -17,7 +17,7 @@ export const LoginPage = ({ lang }: LoginPageProps) => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session) => {
-      if (event === 'USER_REGISTRATION_ERROR' && session?.user?.email) {
+      if (event === AuthChangeEvent.USER_REGISTRATION_ERROR && session?.user?.email) {
         toast({
           title: t.error,
           description: t.emailAlreadyRegistered,
