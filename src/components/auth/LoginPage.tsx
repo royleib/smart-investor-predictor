@@ -17,7 +17,7 @@ export const LoginPage = ({ lang }: LoginPageProps) => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'USER_REGISTRATION_ERROR' && session?.user?.email) {
+      if (event === 'SIGNUP' && session?.user?.email) {
         toast({
           title: t.error,
           description: t.emailAlreadyRegistered,
