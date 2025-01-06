@@ -5,9 +5,15 @@ import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from 'react';
 import { AuthChangeEvent } from '@supabase/supabase-js';
+import { translations, type Language } from "@/utils/i18n";
 
-export const LoginPage = () => {
+interface LoginPageProps {
+  lang: Language;
+}
+
+export const LoginPage = ({ lang }: LoginPageProps) => {
   const { toast } = useToast();
+  const t = translations[lang];
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session) => {
@@ -36,10 +42,10 @@ export const LoginPage = () => {
         <div className="p-8">
           <div className="space-y-2 mb-8">
             <h1 className="text-3xl font-montserrat font-bold text-center bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-              Get Started Today
+              {t.startTrading}
             </h1>
             <p className="text-blue-600/80 text-center font-medium">
-              Join thousands of traders using AI-powered market predictions
+              {t.chooseInvestment}
             </p>
           </div>
           
@@ -84,6 +90,20 @@ export const LoginPage = () => {
                 }}
                 providers={[]}
                 view="sign_up"
+                localization={{
+                  variables: {
+                    sign_up: {
+                      email_label: t.email || 'Email',
+                      password_label: t.password || 'Password',
+                      button_label: t.signUp || 'Sign up',
+                    },
+                    sign_in: {
+                      email_label: t.email || 'Email',
+                      password_label: t.password || 'Password',
+                      button_label: t.signIn || 'Sign in',
+                    },
+                  },
+                }}
                 additionalData={{
                   full_name: undefined
                 }}

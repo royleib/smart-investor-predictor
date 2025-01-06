@@ -26,7 +26,11 @@ export const translations = {
     analysis: "Analysis",
     currentPrice: "Current Price",
     probability: "Probability",
-    signOut: "Sign Out"
+    signOut: "Sign Out",
+    email: "Email",
+    password: "Password",
+    signUp: "Sign up",
+    signIn: "Sign in"
   },
   de: {
     welcome: "Intelligente Marktprognosen",
@@ -39,7 +43,11 @@ export const translations = {
     analysis: "Analyse",
     currentPrice: "Aktueller Preis",
     probability: "Wahrscheinlichkeit",
-    signOut: "Abmelden"
+    signOut: "Abmelden",
+    email: "E-Mail",
+    password: "Passwort",
+    signUp: "Registrieren",
+    signIn: "Anmelden"
   },
   es: {
     welcome: "Predicciones Inteligentes del Mercado",
@@ -52,7 +60,11 @@ export const translations = {
     analysis: "Análisis",
     currentPrice: "Precio actual",
     probability: "Probabilidad",
-    signOut: "Cerrar sesión"
+    signOut: "Cerrar sesión",
+    email: "Correo electrónico",
+    password: "Contraseña",
+    signUp: "Registrarse",
+    signIn: "Iniciar sesión"
   },
   it: {
     welcome: "Previsioni Intelligenti del Mercato",
@@ -65,7 +77,11 @@ export const translations = {
     analysis: "Analisi",
     currentPrice: "Prezzo attuale",
     probability: "Probabilità",
-    signOut: "Disconnetti"
+    signOut: "Disconnetti",
+    email: "Email",
+    password: "Password",
+    signUp: "Registrati",
+    signIn: "Accedi"
   },
   fr: {
     welcome: "Prédictions Intelligentes du Marché",
@@ -78,6 +94,10 @@ export const translations = {
     analysis: "Analyse",
     currentPrice: "Prix actuel",
     probability: "Probabilité",
-    signOut: "Déconnexion"
+    signOut: "Déconnexion",
+    email: "Email",
+    password: "Mot de passe",
+    signUp: "S'inscrire",
+    signIn: "Se connecter"
   }
 };

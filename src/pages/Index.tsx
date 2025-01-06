@@ -68,7 +68,7 @@ const Index = () => {
             <div className="mb-12">
               <Features lang={lang as Language} />
             </div>
-            <LoginPage />
+            <LoginPage lang={lang as Language} />
           </>
         ) : (
           <MainContent 
