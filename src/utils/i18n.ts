@@ -41,7 +41,19 @@ export const translations = {
     selectCrypto: "Select Cryptocurrency",
     us: "US Market",
     eu: "European Markets",
-    asia: "Asian Markets"
+    asia: "Asian Markets",
+    predictionsFor: "Predictions for",
+    startTradingOn: "Start Trading {symbol} on eToro",
+    week: "1 Week",
+    month: "1 Month",
+    sixMonths: "6 Months",
+    year: "1 Year",
+    shortTermForecast: "Based on short-term market indicators and recent trading patterns, we expect a {direction} of {percentage}% in the next week. This forecast considers current market sentiment and immediate technical factors.",
+    monthlyForecast: "Our one-month projection factors in broader market trends, upcoming sector events, and technical analysis, suggesting a {direction} of {percentage}%. This takes into account potential market adjustments and sector momentum.",
+    sixMonthForecast: "Looking at a 6-month horizon, our analysis of long-term trends, market cycles, and fundamental factors points to a {direction} of {percentage}%. This forecast incorporates potential market developments and sector evolution.",
+    yearlyForecast: "Our one-year prediction shows a {direction} of {percentage}%, based on comprehensive analysis of market cycles, industry developments, and long-term growth potential. This considers macroeconomic factors and industry transformations.",
+    increase: "increase",
+    decrease: "decrease"
   },
   de: {
     welcome: "Intelligente Marktprognosen",
@@ -69,7 +81,19 @@ export const translations = {
     selectCrypto: "Wählen Sie Kryptowährung",
     us: "US-Markt",
     eu: "Europäische Märkte",
-    asia: "Asiatische Märkte"
+    asia: "Asiatische Märkte",
+    predictionsFor: "Prognosen für",
+    startTradingOn: "Beginnen Sie den Handel mit {symbol} auf eToro",
+    week: "1 Woche",
+    month: "1 Monat",
+    sixMonths: "6 Monate",
+    year: "1 Jahr",
+    shortTermForecast: "Basierend auf kurzfristigen Marktindikatoren und aktuellen Handelsmustern erwarten wir eine {direction} von {percentage}% in der nächsten Woche. Diese Prognose berücksichtigt die aktuelle Marktstimmung und unmittelbare technische Faktoren.",
+    monthlyForecast: "Unsere Monatsprognose berücksichtigt breitere Markttrends, bevorstehende Sektorereignisse und technische Analysen und deutet auf eine {direction} von {percentage}% hin. Dies berücksichtigt potenzielle Marktanpassungen und Sektorendynamik.",
+    sixMonthForecast: "Mit Blick auf einen 6-Monats-Horizont zeigt unsere Analyse langfristiger Trends, Marktzyklen und fundamentaler Faktoren eine {direction} von {percentage}%. Diese Prognose berücksichtigt potenzielle Marktentwicklungen und Sektorevolution.",
+    yearlyForecast: "Unsere Jahresprognose zeigt eine {direction} von {percentage}%, basierend auf umfassender Analyse von Marktzyklen, Branchenentwicklungen und langfristigem Wachstumspotenzial. Dies berücksichtigt makroökonomische Faktoren und Branchentransformationen.",
+    increase: "Steigerung",
+    decrease: "Rückgang"
   },
   es: {
     welcome: "Predicciones Inteligentes del Mercado",
@@ -97,7 +121,19 @@ export const translations = {
     selectCrypto: "Seleccione criptomoneda",
     us: "Mercado estadounidense",
     eu: "Mercados europeos",
-    asia: "Mercados asiáticos"
+    asia: "Mercados asiáticos",
+    predictionsFor: "Predicciones para",
+    startTradingOn: "Comience a operar {symbol} en eToro",
+    week: "1 Semana",
+    month: "1 Mes",
+    sixMonths: "6 Meses",
+    year: "1 Año",
+    shortTermForecast: "Según los indicadores de mercado a corto plazo y los patrones de negociación recientes, esperamos un {direction} del {percentage}% en la próxima semana. Este pronóstico considera el sentimiento actual del mercado y factores técnicos inmediatos.",
+    monthlyForecast: "Nuestra proyección mensual considera tendencias más amplias del mercado, próximos eventos del sector y análisis técnico, sugiriendo un {direction} del {percentage}%. Esto tiene en cuenta posibles ajustes del mercado y el impulso del sector.",
+    sixMonthForecast: "Mirando un horizonte de 6 meses, nuestro análisis de tendencias a largo plazo, ciclos de mercado y factores fundamentales indica un {direction} del {percentage}%. Este pronóstico incorpora posibles desarrollos del mercado y evolución del sector.",
+    yearlyForecast: "Nuestra predicción anual muestra un {direction} del {percentage}%, basado en un análisis integral de ciclos de mercado, desarrollos industriales y potencial de crecimiento a largo plazo. Esto considera factores macroeconómicos y transformaciones industriales.",
+    increase: "aumento",
+    decrease: "descenso"
   },
   it: {
     welcome: "Previsioni Intelligenti del Mercato",
@@ -125,7 +161,19 @@ export const translations = {
     selectCrypto: "Seleziona criptovaluta",
     us: "Mercato USA",
     eu: "Mercati europei",
-    asia: "Mercati asiatici"
+    asia: "Mercati asiatici",
+    predictionsFor: "Previsioni per",
+    startTradingOn: "Inizia a fare trading su {symbol} su eToro",
+    week: "1 Settimana",
+    month: "1 Mese",
+    sixMonths: "6 Mesi",
+    year: "1 Anno",
+    shortTermForecast: "Sulla base degli indicatori di mercato a breve termine e dei recenti modelli di trading, ci aspettiamo un {direction} del {percentage}% nella prossima settimana. Questa previsione considera il sentiment attuale del mercato e i fattori tecnici immediati.",
+    monthlyForecast: "La nostra proiezione mensile tiene conto delle tendenze più ampie del mercato, dei prossimi eventi del settore e dell'analisi tecnica, suggerendo un {direction} del {percentage}%. Questo tiene conto dei potenziali aggiustamenti del mercato e dello slancio del settore.",
+    sixMonthForecast: "Guardando a un orizzonte di 6 mesi, la nostra analisi delle tendenze a lungo termine, dei cicli di mercato e dei fattori fondamentali indica un {direction} del {percentage}%. Questa previsione incorpora potenziali sviluppi del mercato ed evoluzione del settore.",
+    yearlyForecast: "La nostra previsione annuale mostra un {direction} del {percentage}%, basata su un'analisi completa dei cicli di mercato, degli sviluppi industriali e del potenziale di crescita a lungo termine. Questo considera fattori macroeconomici e trasformazioni industriali.",
+    increase: "aumento",
+    decrease: "diminuzione"
   },
   fr: {
     welcome: "Prédictions Intelligentes du Marché",
@@ -153,6 +201,18 @@ export const translations = {
     selectCrypto: "Sélectionnez une cryptomonnaie",
     us: "Marché américain",
     eu: "Marchés européens",
-    asia: "Marchés asiatiques"
+    asia: "Marchés asiatiques",
+    predictionsFor: "Prévisions pour",
+    startTradingOn: "Commencez à trader {symbol} sur eToro",
+    week: "1 Semaine",
+    month: "1 Mois",
+    sixMonths: "6 Mois",
+    year: "1 An",
+    shortTermForecast: "Sur la base des indicateurs de marché à court terme et des récents modèles de trading, nous prévoyons une {direction} de {percentage}% la semaine prochaine. Cette prévision prend en compte le sentiment actuel du marché et les facteurs techniques immédiats.",
+    monthlyForecast: "Notre projection mensuelle prend en compte les tendances plus larges du marché, les événements sectoriels à venir et l'analyse technique, suggérant une {direction} de {percentage}%. Cela tient compte des ajustements potentiels du marché et de la dynamique du secteur.",
+    sixMonthForecast: "Sur un horizon de 6 mois, notre analyse des tendances à long terme, des cycles de marché et des facteurs fondamentaux indique une {direction} de {percentage}%. Cette prévision intègre les développements potentiels du marché et l'évolution du secteur.",
+    yearlyForecast: "Notre prévision annuelle montre une {direction} de {percentage}%, basée sur une analyse complète des cycles de marché, des développements industriels et du potentiel de croissance à long terme. Cela prend en compte les facteurs macroéconomiques et les transformations industrielles.",
+    increase: "augmentation",
+    decrease: "baisse"
   }
 };

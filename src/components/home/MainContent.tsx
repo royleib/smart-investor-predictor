@@ -148,6 +148,7 @@ export const MainContent = ({ step, setStep, session, lang }: MainContentProps) 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
           <PredictionDisplay
             {...generatePredictions(currentPrice, selectedSymbol, selectedAssetType)}
+            lang={lang}
           />
         </div>
       )}
