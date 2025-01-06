@@ -94,64 +94,66 @@ export const MainContent = ({ step, setStep, session, lang }: MainContentProps) 
         setCurrentPrice={setCurrentPrice}
       />
 
-      {step === 1 && (
-        <div className="space-y-8">
-          <Welcome lang={lang} />
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-            <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-gray-900">
-              {t.selectAssetType}
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+        {step === 1 && (
+          <div className="space-y-6 sm:space-y-8">
+            <Welcome lang={lang} />
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-4 sm:p-8">
+              <h2 className="text-xl sm:text-2xl font-montserrat font-semibold mb-6 text-center text-gray-900">
+                {t.selectAssetType}
+              </h2>
+              <AssetSelector onSelect={handleAssetTypeSelect} lang={lang} />
+            </div>
+          </div>
+        )}
+
+        {step === 2 && selectedAssetType === 'Stocks' && (
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-4 sm:p-8">
+            <h2 className="text-xl sm:text-2xl font-montserrat font-semibold mb-6 text-center text-gray-900">
+              {t.selectMarket}
             </h2>
-            <AssetSelector onSelect={handleAssetTypeSelect} lang={lang} />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+              {['US', 'EU', 'ASIA'].map((market) => (
+                <button
+                  key={market}
+                  onClick={() => handleMarketSelect(market)}
+                  className="bg-gray-50 p-4 sm:p-6 rounded-xl shadow-sm hover:shadow-md transform hover:scale-[1.01] transition-all border border-gray-200"
+                >
+                  <h3 className="text-lg sm:text-xl font-montserrat font-semibold text-gray-900">{market}</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mt-2">{t[market.toLowerCase() as keyof typeof t] || `${market} Market`}</p>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {step === 2 && selectedAssetType === 'Stocks' && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-          <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-gray-900">
-            {t.selectMarket}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {['US', 'EU', 'ASIA'].map((market) => (
-              <button
-                key={market}
-                onClick={() => handleMarketSelect(market)}
-                className="bg-gray-50 p-6 rounded-xl shadow-sm hover:shadow-md transform hover:scale-[1.01] transition-all border border-gray-200"
-              >
-                <h3 className="text-xl font-montserrat font-semibold text-gray-900">{market}</h3>
-                <p className="text-gray-600 mt-2">{t[market.toLowerCase() as keyof typeof t] || `${market} Market`}</p>
-              </button>
-            ))}
+        {step === 3 && selectedMarket && (
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200">
+            <h2 className="text-xl sm:text-2xl font-montserrat font-semibold p-4 sm:p-6 text-center text-gray-900">
+              {t.selectStock} {selectedMarket}
+            </h2>
+            <StockSelector onSelect={handleSymbolSelect} market={selectedMarket} />
           </div>
-        </div>
-      )}
+        )}
 
-      {step === 3 && selectedMarket && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-          <h2 className="text-2xl font-montserrat font-semibold p-6 text-center text-gray-900">
-            {t.selectStock} {selectedMarket}
-          </h2>
-          <StockSelector onSelect={handleSymbolSelect} market={selectedMarket} />
-        </div>
-      )}
+        {step === 4 && selectedAssetType === 'Crypto' && (
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200">
+            <h2 className="text-xl sm:text-2xl font-montserrat font-semibold p-4 sm:p-6 text-center text-gray-900">
+              {t.selectCrypto}
+            </h2>
+            <CryptoSelector onSelect={handleSymbolSelect} />
+          </div>
+        )}
 
-      {step === 4 && selectedAssetType === 'Crypto' && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-          <h2 className="text-2xl font-montserrat font-semibold p-6 text-center text-gray-900">
-            {t.selectCrypto}
-          </h2>
-          <CryptoSelector onSelect={handleSymbolSelect} />
-        </div>
-      )}
-
-      {step === 5 && selectedSymbol && currentPrice && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-          <PredictionDisplay
-            {...generatePredictions(currentPrice, selectedSymbol, selectedAssetType)}
-            lang={lang}
-          />
-        </div>
-      )}
+        {step === 5 && selectedSymbol && currentPrice && (
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-4 sm:p-8">
+            <PredictionDisplay
+              {...generatePredictions(currentPrice, selectedSymbol, selectedAssetType)}
+              lang={lang}
+            />
+          </div>
+        )}
+      </div>
     </>
   );
 };
