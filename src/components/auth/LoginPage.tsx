@@ -4,12 +4,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from 'react';
+import { AuthChangeEvent } from '@supabase/supabase-js';
 
 export const LoginPage = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session) => {
       if (event === 'SIGNED_UP' && session?.user?.email) {
         toast({
           title: "Registration Error",
