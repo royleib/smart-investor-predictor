@@ -1,22 +1,29 @@
 import { TrendingUp, Globe, Award } from 'lucide-react';
 import { motion } from "framer-motion";
+import { translations, type Language } from "@/utils/i18n";
 
-export const Features = () => {
+interface FeaturesProps {
+  lang: Language;
+}
+
+export const Features = ({ lang }: FeaturesProps) => {
+  const t = translations[lang];
+  
   const features = [
     {
       icon: TrendingUp,
       title: "Smart Predictions",
-      description: "Advanced AI algorithms for accurate market predictions"
+      description: t.chooseInvestment
     },
     {
       icon: Globe,
       title: "Global Markets",
-      description: "Access predictions for markets worldwide"
+      description: t.stocks
     },
     {
       icon: Award,
       title: "Expert Analysis",
-      description: "Professional-grade market insights"
+      description: t.analysis
     }
   ];
 

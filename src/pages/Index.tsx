@@ -1,21 +1,27 @@
 import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { AssetSelector } from '@/components/AssetSelector';
 import { LoginPage } from '@/components/auth/LoginPage';
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Features } from '@/components/home/Features';
 import { Header } from '@/components/home/Header';
 import { Welcome } from '@/components/home/Welcome';
 import { MainContent } from '@/components/home/MainContent';
+import { isValidLanguage, defaultLanguage, type Language } from "@/utils/i18n";
 
 const Index = () => {
   const [session, setSession] = useState<any>(null);
   const [step, setStep] = useState(1);
   const { toast } = useToast();
   const navigate = useNavigate();
-
+  const { lang } = useParams();
+  
   useEffect(() => {
+    if (!isValidLanguage(lang)) {
+      navigate(`/${defaultLanguage}`, { replace: true });
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       setSession(currentSession);
     });
@@ -27,7 +33,7 @@ const Index = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [lang, navigate]);
 
   const handleSignOut = async () => {
     try {
@@ -47,16 +53,20 @@ const Index = () => {
     }
   };
 
+  if (!isValidLanguage(lang)) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      <Header onSignOut={handleSignOut} isAuthenticated={!!session} />
+      <Header onSignOut={handleSignOut} isAuthenticated={!!session} currentLang={lang as Language} />
       
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         {!session ? (
           <>
-            <Welcome />
+            <Welcome lang={lang as Language} />
             <div className="mb-12">
-              <Features />
+              <Features lang={lang as Language} />
             </div>
             <LoginPage />
           </>
@@ -65,6 +75,7 @@ const Index = () => {
             step={step}
             setStep={setStep}
             session={session}
+            lang={lang as Language}
           />
         )}
       </main>
