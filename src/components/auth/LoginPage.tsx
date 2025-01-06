@@ -2,8 +2,28 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect } from 'react';
 
 export const LoginPage = () => {
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'USER_REGISTRATION_ERROR') {
+        toast({
+          title: "Registration Error",
+          description: "This email is already registered. Please try logging in instead.",
+          variant: "destructive",
+        });
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [toast]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -42,15 +62,15 @@ export const LoginPage = () => {
                         inputBorderHover: '#94a3b8',
                         inputBorderFocus: '#2563eb',
                       },
-                      borderWidths: {
-                        buttonBorderWidth: '1px',
-                        inputBorderWidth: '1px',
-                      },
-                      radii: {
-                        borderRadiusButton: '0.75rem',
-                        buttonBorderRadius: '0.75rem',
-                        inputBorderRadius: '0.75rem',
-                      },
+                    },
+                    borderWidths: {
+                      buttonBorderWidth: '1px',
+                      inputBorderWidth: '1px',
+                    },
+                    radii: {
+                      borderRadiusButton: '0.75rem',
+                      buttonBorderRadius: '0.75rem',
+                      inputBorderRadius: '0.75rem',
                     },
                   },
                   className: {
