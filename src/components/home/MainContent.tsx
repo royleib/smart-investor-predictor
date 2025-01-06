@@ -101,7 +101,7 @@ export const MainContent = ({ step, setStep, session, lang }: MainContentProps) 
             <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-gray-900">
               {t.selectAssetType}
             </h2>
-            <AssetSelector onSelect={handleAssetTypeSelect} />
+            <AssetSelector onSelect={handleAssetTypeSelect} lang={lang} />
           </div>
         </div>
       )}
