@@ -9,14 +9,16 @@ import { generatePredictions } from '@/components/prediction/PredictionGenerator
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Welcome } from '@/components/home/Welcome';
+import { type Language } from "@/utils/i18n";
 
 interface MainContentProps {
   step: number;
   setStep: (step: number) => void;
   session: any;
+  lang: Language;
 }
 
-export const MainContent = ({ step, setStep, session }: MainContentProps) => {
+export const MainContent = ({ step, setStep, session, lang }: MainContentProps) => {
   const [selectedAssetType, setSelectedAssetType] = useState('');
   const [selectedMarket, setSelectedMarket] = useState('');
   const [selectedSymbol, setSelectedSymbol] = useState('');
@@ -93,7 +95,7 @@ export const MainContent = ({ step, setStep, session }: MainContentProps) => {
 
       {step === 1 && (
         <div className="space-y-8">
-          <Welcome />
+          <Welcome lang={lang} />
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
             <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-gray-900">
               Select Asset Type
