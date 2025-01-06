@@ -10,7 +10,7 @@ export const LoginPage = () => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'USER_REGISTRATION_ERROR') {
+      if (event === 'SIGNED_UP' && session?.user?.email) {
         toast({
           title: "Registration Error",
           description: "This email is already registered. Please try logging in instead.",
@@ -63,14 +63,15 @@ export const LoginPage = () => {
                         inputBorderFocus: '#2563eb',
                       },
                     },
-                    borderWidths: {
-                      buttonBorderWidth: '1px',
-                      inputBorderWidth: '1px',
+                  },
+                  style: {
+                    button: {
+                      borderWidth: '1px',
+                      borderRadius: '0.75rem',
                     },
-                    radii: {
-                      borderRadiusButton: '0.75rem',
-                      buttonBorderRadius: '0.75rem',
-                      inputBorderRadius: '0.75rem',
+                    input: {
+                      borderWidth: '1px',
+                      borderRadius: '0.75rem',
                     },
                   },
                   className: {
