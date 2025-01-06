@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from 'react';
-import { AuthChangeEvent } from '@supabase/supabase-js';
 import { translations, type Language } from "@/utils/i18n";
 
 interface LoginPageProps {
@@ -16,11 +15,11 @@ export const LoginPage = ({ lang }: LoginPageProps) => {
   const t = translations[lang];
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session) => {
-      if (event === 'SIGNED_UP' && session?.user?.email) {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'USER_REGISTRATION_ERROR' && session?.user?.email) {
         toast({
-          title: "Registration Error",
-          description: "This email is already registered. Please try logging in instead.",
+          title: t.error,
+          description: t.emailAlreadyRegistered || "This email is already registered. Please try logging in instead.",
           variant: "destructive",
         });
       }
@@ -29,7 +28,7 @@ export const LoginPage = ({ lang }: LoginPageProps) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [toast]);
+  }, [toast, t]);
 
   return (
     <motion.div

@@ -9,7 +9,7 @@ import { generatePredictions } from '@/components/prediction/PredictionGenerator
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Welcome } from '@/components/home/Welcome';
-import { type Language } from "@/utils/i18n";
+import { translations, type Language } from "@/utils/i18n";
 
 interface MainContentProps {
   step: number;
@@ -25,6 +25,7 @@ export const MainContent = ({ step, setStep, session, lang }: MainContentProps) 
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
   const [showLimitAlert, setShowLimitAlert] = useState(false);
   const { toast } = useToast();
+  const t = translations[lang];
 
   const handleAssetTypeSelect = (type: string) => {
     setSelectedAssetType(type);
@@ -58,8 +59,8 @@ export const MainContent = ({ step, setStep, session, lang }: MainContentProps) 
 
       if (error) {
         toast({
-          title: "Error",
-          description: "Failed to save prediction. Please try again.",
+          title: t.error || "Error",
+          description: t.failedToSavePrediction || "Failed to save prediction. Please try again.",
           variant: "destructive",
         });
         return;
@@ -70,8 +71,8 @@ export const MainContent = ({ step, setStep, session, lang }: MainContentProps) 
     } catch (error) {
       console.error('Error handling symbol selection:', error);
       toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        title: t.error || "Error",
+        description: t.unexpectedError || "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     }
@@ -98,7 +99,7 @@ export const MainContent = ({ step, setStep, session, lang }: MainContentProps) 
           <Welcome lang={lang} />
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
             <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-gray-900">
-              Select Asset Type
+              {t.selectAssetType}
             </h2>
             <AssetSelector onSelect={handleAssetTypeSelect} />
           </div>
@@ -108,7 +109,7 @@ export const MainContent = ({ step, setStep, session, lang }: MainContentProps) 
       {step === 2 && selectedAssetType === 'Stocks' && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
           <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center text-gray-900">
-            Select Market
+            {t.selectMarket}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {['US', 'EU', 'ASIA'].map((market) => (
@@ -118,7 +119,7 @@ export const MainContent = ({ step, setStep, session, lang }: MainContentProps) 
                 className="bg-gray-50 p-6 rounded-xl shadow-sm hover:shadow-md transform hover:scale-[1.01] transition-all border border-gray-200"
               >
                 <h3 className="text-xl font-montserrat font-semibold text-gray-900">{market}</h3>
-                <p className="text-gray-600 mt-2">{market} Market</p>
+                <p className="text-gray-600 mt-2">{t[market.toLowerCase() as keyof typeof t] || `${market} Market`}</p>
               </button>
             ))}
           </div>
@@ -128,7 +129,7 @@ export const MainContent = ({ step, setStep, session, lang }: MainContentProps) 
       {step === 3 && selectedMarket && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200">
           <h2 className="text-2xl font-montserrat font-semibold p-6 text-center text-gray-900">
-            Select Stock from {selectedMarket} Market
+            {t.selectStock} {selectedMarket}
           </h2>
           <StockSelector onSelect={handleSymbolSelect} market={selectedMarket} />
         </div>
@@ -137,7 +138,7 @@ export const MainContent = ({ step, setStep, session, lang }: MainContentProps) 
       {step === 4 && selectedAssetType === 'Crypto' && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200">
           <h2 className="text-2xl font-montserrat font-semibold p-6 text-center text-gray-900">
-            Select Cryptocurrency
+            {t.selectCrypto}
           </h2>
           <CryptoSelector onSelect={handleSymbolSelect} />
         </div>

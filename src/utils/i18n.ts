@@ -30,7 +30,17 @@ export const translations = {
     email: "Email",
     password: "Password",
     signUp: "Sign up",
-    signIn: "Sign in"
+    signIn: "Sign in",
+    error: "Error",
+    failedToSavePrediction: "Failed to save prediction. Please try again.",
+    unexpectedError: "An unexpected error occurred. Please try again.",
+    selectAssetType: "Select Asset Type",
+    selectMarket: "Select Market",
+    selectStock: "Select Stock from",
+    selectCrypto: "Select Cryptocurrency",
+    us: "US Market",
+    eu: "European Markets",
+    asia: "Asian Markets"
   },
   de: {
     welcome: "Intelligente Marktprognosen",
@@ -47,7 +57,17 @@ export const translations = {
     email: "E-Mail",
     password: "Passwort",
     signUp: "Registrieren",
-    signIn: "Anmelden"
+    signIn: "Anmelden",
+    error: "Fehler",
+    failedToSavePrediction: "Fehler beim Speichern der Vorhersage. Bitte versuchen Sie es erneut.",
+    unexpectedError: "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    selectAssetType: "Wählen Sie den Anlagetyp",
+    selectMarket: "Wählen Sie den Markt",
+    selectStock: "Wählen Sie Aktie aus",
+    selectCrypto: "Wählen Sie Kryptowährung",
+    us: "US-Markt",
+    eu: "Europäische Märkte",
+    asia: "Asiatische Märkte"
   },
   es: {
     welcome: "Predicciones Inteligentes del Mercado",
@@ -64,7 +84,17 @@ export const translations = {
     email: "Correo electrónico",
     password: "Contraseña",
     signUp: "Registrarse",
-    signIn: "Iniciar sesión"
+    signIn: "Iniciar sesión",
+    error: "Error",
+    failedToSavePrediction: "Error al guardar la predicción. Por favor, inténtelo de nuevo.",
+    unexpectedError: "Ha ocurrido un error inesperado. Por favor, inténtelo de nuevo.",
+    selectAssetType: "Seleccione tipo de activo",
+    selectMarket: "Seleccione mercado",
+    selectStock: "Seleccione acción de",
+    selectCrypto: "Seleccione criptomoneda",
+    us: "Mercado estadounidense",
+    eu: "Mercados europeos",
+    asia: "Mercados asiáticos"
   },
   it: {
     welcome: "Previsioni Intelligenti del Mercato",
@@ -81,7 +111,17 @@ export const translations = {
     email: "Email",
     password: "Password",
     signUp: "Registrati",
-    signIn: "Accedi"
+    signIn: "Accedi",
+    error: "Errore",
+    failedToSavePrediction: "Impossibile salvare la previsione. Per favore riprova.",
+    unexpectedError: "Si è verificato un errore imprevisto. Per favore riprova.",
+    selectAssetType: "Seleziona tipo di asset",
+    selectMarket: "Seleziona mercato",
+    selectStock: "Seleziona azione da",
+    selectCrypto: "Seleziona criptovaluta",
+    us: "Mercato USA",
+    eu: "Mercati europei",
+    asia: "Mercati asiatici"
   },
   fr: {
     welcome: "Prédictions Intelligentes du Marché",
@@ -98,6 +138,16 @@ export const translations = {
     email: "Email",
     password: "Mot de passe",
     signUp: "S'inscrire",
-    signIn: "Se connecter"
+    signIn: "Se connecter",
+    error: "Erreur",
+    failedToSavePrediction: "Échec de l'enregistrement de la prédiction. Veuillez réessayer.",
+    unexpectedError: "Une erreur inattendue s'est produite. Veuillez réessayer.",
+    selectAssetType: "Sélectionnez le type d'actif",
+    selectMarket: "Sélectionnez le marché",
+    selectStock: "Sélectionnez une action de",
+    selectCrypto: "Sélectionnez une cryptomonnaie",
+    us: "Marché américain",
+    eu: "Marchés européens",
+    asia: "Marchés asiatiques"
   }
 };
