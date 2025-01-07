@@ -40,5 +40,6 @@ export const en = {
   stocksDescription: "Trade company shares",
   cryptoDescription: "Digital assets",
   etfsDescription: "Exchange-traded funds",
-  forexDescription: "Currency exchange"
+  forexDescription: "Currency exchange",
+  limitReached: "You've reached the prediction limit."
 };
