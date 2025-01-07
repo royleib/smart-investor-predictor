@@ -33,12 +33,9 @@ export const fr = {
   year: "1 An",
   shortTermForecast: "Sur la base des indicateurs de marché à court terme et des récents modèles de trading, nous prévoyons une {direction} de {percentage}% la semaine prochaine. Cette prévision prend en compte le sentiment actuel du marché et les facteurs techniques immédiats.",
   monthlyForecast: "Notre projection mensuelle prend en compte les tendances plus larges du marché, les événements sectoriels à venir et l'analyse technique, suggérant une {direction} de {percentage}%. Cela tient compte des ajustements potentiels du marché et de la dynamique du secteur.",
-  sixMonthForecast: "Sur un horizon de 6 mois, notre analyse des tendances à long terme, des cycles de marché et des facteurs fondamentaux indique une {direction} de {percentage}%. Cette prévision intègre les développements potentiels du marché et l'évolution du secteur.",
+  sixMonthForecast: "Sur un horizon de 6 mois, notre analyse des tendances à long terme, des cycles de marché et des facteurs fondamentaux indique une {direction} de {percentage}%. Cette prévision incorpore les développements potentiels du marché et l'évolution du secteur.",
   yearlyForecast: "Notre prévision annuelle montre une {direction} de {percentage}%, basée sur une analyse complète des cycles de marché, des développements industriels et du potentiel de croissance à long terme. Cela prend en compte les facteurs macroéconomiques et les transformations industrielles.",
   increase: "augmentation",
   decrease: "baisse",
-  stocksDescription: "Négocier des actions d'entreprises",
-  cryptoDescription: "Actifs numériques",
-  etfsDescription: "Fonds négociés en bourse",
-  forexDescription: "Change de devises"
+  limitReached: "Vous avez atteint la limite de prédictions."
 };

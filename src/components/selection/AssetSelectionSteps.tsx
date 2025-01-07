@@ -4,6 +4,8 @@ import { CryptoSelector } from '@/components/CryptoSelector';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { translations, type Language } from "@/utils/i18n";
+import { useState } from 'react';
+import { PredictionLimitAlert } from '../prediction/PredictionLimitAlert';
 
 interface AssetSelectionStepsProps {
   step: number;
@@ -30,6 +32,7 @@ export const AssetSelectionSteps = ({
 }: AssetSelectionStepsProps) => {
   const { toast } = useToast();
   const t = translations[lang];
+  const [showLimitAlert, setShowLimitAlert] = useState(false);
 
   const handleAssetTypeSelect = (type: string) => {
     setSelectedAssetType(type);
@@ -53,11 +56,7 @@ export const AssetSelectionSteps = ({
         .eq('user_id', session.user.id);
 
       if (count !== null && count >= 2) {
-        toast({
-          title: t.error || "Error",
-          description: t.limitReached || "You've reached the prediction limit.",
-          variant: "destructive",
-        });
+        setShowLimitAlert(true);
         return;
       }
 
@@ -88,6 +87,13 @@ export const AssetSelectionSteps = ({
 
   return (
     <>
+      {showLimitAlert && (
+        <PredictionLimitAlert 
+          userId={session.user.id} 
+          onClose={() => setShowLimitAlert(false)} 
+        />
+      )}
+
       {step === 1 && (
         <div className="space-y-6 sm:space-y-8">
           <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-4 sm:p-8">

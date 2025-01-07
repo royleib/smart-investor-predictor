@@ -1,9 +1,9 @@
 export const de = {
   welcome: "Intelligente Marktprognosen",
   chooseInvestment: "Wählen Sie Ihre Anlagekategorie und erhalten Sie KI-gestützte Einblicke",
-  stocks: "Aktien",
-  crypto: "Kryptowährungen",
-  etfs: "ETFs",
+  stocks: "Aktien handeln",
+  crypto: "Digitale Vermögenswerte",
+  etfs: "Börsengehandelte Fonds",
   forex: "Devisenhandel",
   startTrading: "Handel beginnen",
   analysis: "Analyse",
@@ -37,8 +37,5 @@ export const de = {
   yearlyForecast: "Unsere Jahresprognose zeigt eine {direction} von {percentage}%, basierend auf umfassender Analyse von Marktzyklen, Branchenentwicklungen und langfristigem Wachstumspotenzial. Dies berücksichtigt makroökonomische Faktoren und Branchentransformationen.",
   increase: "Steigerung",
   decrease: "Rückgang",
-  stocksDescription: "Handeln Sie mit Unternehmensaktien",
-  cryptoDescription: "Digitale Vermögenswerte",
-  etfsDescription: "Börsengehandelte Fonds",
-  forexDescription: "Währungshandel"
+  limitReached: "Sie haben das Vorhersagelimit erreicht."
 };
