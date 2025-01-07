@@ -37,5 +37,9 @@ export const de = {
   yearlyForecast: "Unsere Jahresprognose zeigt eine {direction} von {percentage}%, basierend auf umfassender Analyse von Marktzyklen, Branchenentwicklungen und langfristigem Wachstumspotenzial. Dies berücksichtigt makroökonomische Faktoren und Branchentransformationen.",
   increase: "Steigerung",
   decrease: "Rückgang",
-  limitReached: "Sie haben das Vorhersagelimit erreicht."
+  limitReached: "Sie haben das Vorhersagelimit erreicht.",
+  stocksDescription: "Aktien handeln",
+  cryptoDescription: "Digitale Vermögenswerte",
+  etfsDescription: "Börsengehandelte Fonds",
+  forexDescription: "Devisenhandel"
 };

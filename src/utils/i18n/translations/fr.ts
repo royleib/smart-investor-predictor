@@ -37,5 +37,9 @@ export const fr = {
   yearlyForecast: "Notre prévision annuelle montre une {direction} de {percentage}%, basée sur une analyse complète des cycles de marché, des développements industriels et du potentiel de croissance à long terme. Cela prend en compte les facteurs macroéconomiques et les transformations industrielles.",
   increase: "augmentation",
   decrease: "baisse",
-  limitReached: "Vous avez atteint la limite de prédictions."
+  limitReached: "Vous avez atteint la limite de prédictions.",
+  stocksDescription: "Négocier des actions",
+  cryptoDescription: "Actifs numériques",
+  etfsDescription: "Fonds négociés en bourse",
+  forexDescription: "Change de devises"
 };

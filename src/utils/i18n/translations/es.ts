@@ -37,5 +37,9 @@ export const es = {
   yearlyForecast: "Nuestra predicción anual muestra un {direction} del {percentage}%, basado en un análisis integral de ciclos de mercado, desarrollos industriales y potencial de crecimiento a largo plazo. Esto considera factores macroeconómicos y transformaciones industriales.",
   increase: "aumento",
   decrease: "descenso",
-  limitReached: "Has alcanzado el límite de predicciones."
+  limitReached: "Has alcanzado el límite de predicciones.",
+  stocksDescription: "Comerciar acciones",
+  cryptoDescription: "Activos digitales",
+  etfsDescription: "Fondos cotizados",
+  forexDescription: "Cambio de divisas"
 };
