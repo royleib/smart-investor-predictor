@@ -1,15 +1,8 @@
 import { useState } from 'react';
-import { AssetSelector } from '@/components/AssetSelector';
-import { StockSelector } from '@/components/StockSelector';
-import { CryptoSelector } from '@/components/CryptoSelector';
-import { PredictionDisplay } from '@/components/PredictionDisplay';
-import { PriceDataFetcher } from '@/components/prediction/PriceDataFetcher';
-import { PredictionLimitAlert } from '@/components/prediction/PredictionLimitAlert';
-import { generatePredictions } from '@/components/prediction/PredictionGenerator';
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { Welcome } from '@/components/home/Welcome';
-import { translations, type Language } from "@/utils/i18n";
+import { AssetSelectionSteps } from '@/components/selection/AssetSelectionSteps';
+import { PredictionHandler } from '@/components/prediction/PredictionHandler';
+import { type Language } from "@/utils/i18n";
 
 interface MainContentProps {
   step: number;
@@ -22,138 +15,30 @@ export const MainContent = ({ step, setStep, session, lang }: MainContentProps) 
   const [selectedAssetType, setSelectedAssetType] = useState('');
   const [selectedMarket, setSelectedMarket] = useState('');
   const [selectedSymbol, setSelectedSymbol] = useState('');
-  const [currentPrice, setCurrentPrice] = useState<number | null>(null);
-  const [showLimitAlert, setShowLimitAlert] = useState(false);
-  const { toast } = useToast();
-  const t = translations[lang];
-
-  const handleAssetTypeSelect = (type: string) => {
-    setSelectedAssetType(type);
-    if (type === 'Crypto') {
-      setStep(4);
-    } else {
-      setStep(2);
-    }
-  };
-
-  const handleMarketSelect = (market: string) => {
-    setSelectedMarket(market);
-    setStep(3);
-  };
-
-  const handleSymbolSelect = async (symbol: string) => {
-    try {
-      const { count } = await supabase
-        .from('user_predictions')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', session.user.id);
-
-      if (count !== null && count >= 2) {
-        setShowLimitAlert(true);
-        return;
-      }
-
-      const { error } = await supabase
-        .from('user_predictions')
-        .insert([{ user_id: session.user.id, symbol }]);
-
-      if (error) {
-        toast({
-          title: t.error || "Error",
-          description: t.failedToSavePrediction || "Failed to save prediction. Please try again.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      setSelectedSymbol(symbol);
-      setStep(5);
-    } catch (error) {
-      console.error('Error handling symbol selection:', error);
-      toast({
-        title: t.error || "Error",
-        description: t.unexpectedError || "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
 
   return (
-    <>
-      {showLimitAlert && (
-        <PredictionLimitAlert 
-          userId={session.user.id} 
-          onClose={() => setShowLimitAlert(false)} 
-        />
-      )}
+    <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+      {step === 1 && <Welcome lang={lang} />}
       
-      <PriceDataFetcher
+      <AssetSelectionSteps
+        step={step}
+        selectedAssetType={selectedAssetType}
+        selectedMarket={selectedMarket}
+        setSelectedAssetType={setSelectedAssetType}
+        setSelectedMarket={setSelectedMarket}
+        setSelectedSymbol={setSelectedSymbol}
+        setStep={setStep}
+        session={session}
+        lang={lang}
+      />
+
+      <PredictionHandler
         step={step}
         selectedSymbol={selectedSymbol}
         selectedAssetType={selectedAssetType}
-        setCurrentPrice={setCurrentPrice}
+        session={session}
+        lang={lang}
       />
-
-      <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-        {step === 1 && (
-          <div className="space-y-6 sm:space-y-8">
-            <Welcome lang={lang} />
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-4 sm:p-8">
-              <h2 className="text-xl sm:text-2xl font-montserrat font-semibold mb-6 text-center text-gray-900">
-                {t.selectAssetType}
-              </h2>
-              <AssetSelector onSelect={handleAssetTypeSelect} lang={lang} />
-            </div>
-          </div>
-        )}
-
-        {step === 2 && selectedAssetType === 'Stocks' && (
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-4 sm:p-8">
-            <h2 className="text-xl sm:text-2xl font-montserrat font-semibold mb-6 text-center text-gray-900">
-              {t.selectMarket}
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-              {['US', 'EU', 'ASIA'].map((market) => (
-                <button
-                  key={market}
-                  onClick={() => handleMarketSelect(market)}
-                  className="bg-gray-50 p-4 sm:p-6 rounded-xl shadow-sm hover:shadow-md transform hover:scale-[1.01] transition-all border border-gray-200"
-                >
-                  <h3 className="text-lg sm:text-xl font-montserrat font-semibold text-gray-900">{market}</h3>
-                  <p className="text-sm sm:text-base text-gray-600 mt-2">{t[market.toLowerCase() as keyof typeof t] || `${market} Market`}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {step === 3 && selectedMarket && (
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200">
-            <h2 className="text-xl sm:text-2xl font-montserrat font-semibold p-4 sm:p-6 text-center text-gray-900">
-              {t.selectStock} {selectedMarket}
-            </h2>
-            <StockSelector onSelect={handleSymbolSelect} market={selectedMarket} />
-          </div>
-        )}
-
-        {step === 4 && selectedAssetType === 'Crypto' && (
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200">
-            <h2 className="text-xl sm:text-2xl font-montserrat font-semibold p-4 sm:p-6 text-center text-gray-900">
-              {t.selectCrypto}
-            </h2>
-            <CryptoSelector onSelect={handleSymbolSelect} />
-          </div>
-        )}
-
-        {step === 5 && selectedSymbol && currentPrice && (
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-4 sm:p-8">
-            <PredictionDisplay
-              {...generatePredictions(currentPrice, selectedSymbol, selectedAssetType)}
-              lang={lang}
-            />
-          </div>
-        )}
-      </div>
-    </>
+    </div>
   );
 };
