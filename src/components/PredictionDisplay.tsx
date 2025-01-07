@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight, ArrowDownRight, ExternalLink } from 'lucide-react';
 import { translations, type Language } from "@/utils/i18n";
+import { getTradingUrl } from "@/utils/tradingUrls";
 
 interface PredictionProps {
   symbol: string;
@@ -88,7 +89,7 @@ export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanati
       <div className="mt-6 md:mt-8">
         <Button 
           className="w-full py-4 md:py-6 text-base md:text-lg font-semibold bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-300 group"
-          onClick={() => window.open('https://med.etoro.com/B12087_A71830_TClick.aspx', '_blank')}
+          onClick={() => window.open(getTradingUrl(symbol), '_blank')}
         >
           {t.startTradingOn.replace('{symbol}', symbol)}
           <ExternalLink className="ml-2 h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-1 transition-transform" />
