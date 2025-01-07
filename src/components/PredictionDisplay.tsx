@@ -86,7 +86,7 @@ export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanati
         <p className="text-sm md:text-base text-gray-700">{explanation}</p>
       </Card>
 
-      <div className="mt-6 md:mt-8">
+      <div className="mt-6 md:mt-8 space-y-2">
         <Button 
           className="w-full py-4 md:py-6 text-base md:text-lg font-semibold bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-300 group"
           onClick={() => window.open(getTradingUrl(symbol), '_blank')}
@@ -94,6 +94,9 @@ export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanati
           {t.startTradingOn.replace('{symbol}', symbol)}
           <ExternalLink className="ml-2 h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-1 transition-transform" />
         </Button>
+        <p className="text-xs text-gray-500 text-center mt-2">
+          This is not an investment advice. eToro is a multi-asset investment platform. The value of your investments may go up or down. Your capital is at risk.
+        </p>
       </div>
     </div>
   );
