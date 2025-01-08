@@ -1,12 +1,14 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronRight, Briefcase, Bitcoin, LineChart, DollarSign } from 'lucide-react';
+import { ChevronRight, Briefcase, Bitcoin, LineChart, DollarSign, TrendingUp } from 'lucide-react';
 import { motion } from "framer-motion";
 import { translations, type Language } from "@/utils/i18n";
 
 const assetTypes = [
+  { id: 'Indices', icon: TrendingUp, translationKey: 'indicesDescription' },
   { id: 'Stocks', icon: Briefcase, translationKey: 'stocksDescription' },
   { id: 'Crypto', icon: Bitcoin, translationKey: 'cryptoDescription' },
   { id: 'ETFs', icon: LineChart, translationKey: 'etfsDescription' },
+  { id: 'AI_ETFs', icon: LineChart, translationKey: 'aiEtfsDescription' },
   { id: 'Forex', icon: DollarSign, translationKey: 'forexDescription' }
 ] as const;
 

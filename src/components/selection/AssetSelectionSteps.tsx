@@ -1,6 +1,9 @@
 import { AssetSelector } from '@/components/AssetSelector';
 import { StockSelector } from '@/components/StockSelector';
 import { CryptoSelector } from '@/components/CryptoSelector';
+import { ETFSelector } from '@/components/ETFSelector';
+import { AIETFSelector } from '@/components/AIETFSelector';
+import { IndicesSelector } from '@/components/IndicesSelector';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { translations, type Language } from "@/utils/i18n";
@@ -36,7 +39,7 @@ export const AssetSelectionSteps = ({
 
   const handleAssetTypeSelect = (type: string) => {
     setSelectedAssetType(type);
-    if (type === 'Crypto') {
+    if (type === 'Crypto' || type === 'ETFs' || type === 'AI_ETFs' || type === 'Indices') {
       setStep(4);
     } else {
       setStep(2);
@@ -140,6 +143,33 @@ export const AssetSelectionSteps = ({
             {t.selectCrypto}
           </h2>
           <CryptoSelector onSelect={handleSymbolSelect} />
+        </div>
+      )}
+
+      {step === 4 && selectedAssetType === 'ETFs' && (
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl sm:text-2xl font-montserrat font-semibold p-4 sm:p-6 text-center text-gray-900">
+            Select ETF
+          </h2>
+          <ETFSelector onSelect={handleSymbolSelect} />
+        </div>
+      )}
+
+      {step === 4 && selectedAssetType === 'AI_ETFs' && (
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl sm:text-2xl font-montserrat font-semibold p-4 sm:p-6 text-center text-gray-900">
+            Select AI ETF
+          </h2>
+          <AIETFSelector onSelect={handleSymbolSelect} />
+        </div>
+      )}
+
+      {step === 4 && selectedAssetType === 'Indices' && (
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-xl sm:text-2xl font-montserrat font-semibold p-4 sm:p-6 text-center text-gray-900">
+            Select Index
+          </h2>
+          <IndicesSelector onSelect={handleSymbolSelect} />
         </div>
       )}
     </>

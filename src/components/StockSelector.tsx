@@ -10,30 +10,35 @@ const stocksByMarket = {
     { symbol: 'META', name: 'Meta Platforms', description: 'Technology' },
     { symbol: 'TSLA', name: 'Tesla Inc.', description: 'Automotive' },
     { symbol: 'NVDA', name: 'NVIDIA Corporation', description: 'Semiconductors' },
-    { symbol: 'JPM', name: 'JPMorgan Chase', description: 'Banking' },
-    { symbol: 'V', name: 'Visa Inc.', description: 'Financial Services' },
-    { symbol: 'WMT', name: 'Walmart', description: 'Retail' },
-    { symbol: 'JNJ', name: 'Johnson & Johnson', description: 'Healthcare' },
-    { symbol: 'PG', name: 'Procter & Gamble', description: 'Consumer Goods' },
-    { symbol: 'MA', name: 'Mastercard', description: 'Financial Services' },
-    { symbol: 'HD', name: 'Home Depot', description: 'Retail' },
-    { symbol: 'DIS', name: 'Walt Disney', description: 'Entertainment' }
+    { symbol: 'AMD', name: 'Advanced Micro Devices', description: 'Semiconductors' },
+    { symbol: 'PLTR', name: 'Palantir Technologies', description: 'Software' },
+    { symbol: 'SOUN', name: 'SoundHound AI', description: 'Artificial Intelligence' },
+    { symbol: 'PEGA', name: 'Pegasystems Inc.', description: 'Software' },
+    { symbol: 'PRCT', name: 'PROCEPT BioRobotics', description: 'Medical Devices' },
+    { symbol: 'ISRG', name: 'Intuitive Surgical', description: 'Medical Devices' },
+    { symbol: 'UPST', name: 'Upstart Holdings', description: 'Fintech' },
+    { symbol: 'JBT', name: 'John Bean Technologies', description: 'Industrial Tech' }
   ],
   EU: [
     { symbol: 'ASML.AMS', name: 'ASML Holding', description: 'Semiconductor Equipment' },
     { symbol: 'SAP.FRA', name: 'SAP SE', description: 'Enterprise Software' },
+    { symbol: 'LLOY.LON', name: 'Lloyds Banking Group', description: 'Banking' },
+    { symbol: 'RR.LON', name: 'Rolls-Royce Holdings', description: 'Aerospace' },
+    { symbol: 'BARC.LON', name: 'Barclays PLC', description: 'Banking' },
+    { symbol: 'TSCO.LON', name: 'Tesco PLC', description: 'Retail' },
     { symbol: 'LVMH.PAR', name: 'LVMH', description: 'Luxury Goods' },
     { symbol: 'SIE.FRA', name: 'Siemens AG', description: 'Industrial Technology' },
     { symbol: 'NOVO-B.CPH', name: 'Novo Nordisk', description: 'Healthcare' },
-    { symbol: 'SHELL.LON', name: 'Shell PLC', description: 'Energy' },
+    { symbol: 'SHELL.LON', name: 'Shell PLC', description: 'Energy' }
   ],
   ASIA: [
     { symbol: '9984.TYO', name: 'SoftBank Group', description: 'Technology Investment' },
     { symbol: '005930.KRX', name: 'Samsung Electronics', description: 'Technology' },
     { symbol: '9988.HKG', name: 'Alibaba Group', description: 'E-commerce' },
+    { symbol: 'NIO.HKG', name: 'NIO Inc.', description: 'Electric Vehicles' },
     { symbol: '000660.KRX', name: 'SK Hynix', description: 'Semiconductors' },
     { symbol: '7203.TYO', name: 'Toyota Motor', description: 'Automotive' },
-    { symbol: '1299.HKG', name: 'AIA Group', description: 'Insurance' },
+    { symbol: '1299.HKG', name: 'AIA Group', description: 'Insurance' }
   ]
 };
 
