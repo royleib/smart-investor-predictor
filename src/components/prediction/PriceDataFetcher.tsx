@@ -115,9 +115,7 @@ export const PriceDataFetcher = ({ step, selectedSymbol, selectedAssetType, setC
 
             if (data.price) {
               console.log('Real-time price for', selectedSymbol, ':', data.price);
-              setCurrent
-
-Price(data.price);
+              setCurrentPrice(data.price);
               return;
             }
           }
