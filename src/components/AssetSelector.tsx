@@ -20,10 +20,10 @@ interface AssetSelectorProps {
 export const AssetSelector = ({ onSelect, lang }: AssetSelectorProps) => {
   const t = translations[lang];
 
-  const getTranslatedTitle = (id: string) => {
+  const getTranslatedTitle = (id: string): string => {
     switch (id) {
       case 'Indices':
-        return t.indices;
+        return 'Market Indices';
       case 'Stocks':
         return t.stocks;
       case 'Crypto':
@@ -31,7 +31,7 @@ export const AssetSelector = ({ onSelect, lang }: AssetSelectorProps) => {
       case 'ETFs':
         return t.etfs;
       case 'AI_ETFs':
-        return t.ai_etfs;
+        return 'AI ETFs';
       case 'Forex':
         return t.forex;
       default:
