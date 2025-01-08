@@ -47,4 +47,4 @@ export const de: TranslationType = {
   forexDescription: "Handeln Sie Währungspaare",
   indicesDescription: "Handeln Sie wichtige Marktindizes",
   aiEtfsDescription: "Handeln Sie KI-fokussierte ETFs"
-};
+}

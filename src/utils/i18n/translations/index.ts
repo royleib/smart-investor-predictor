@@ -11,4 +11,4 @@ export const translations: Record<Language, TranslationType> = {
   es,
   it,
   fr
-};
+}

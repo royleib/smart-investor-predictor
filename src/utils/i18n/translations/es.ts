@@ -47,4 +47,4 @@ export const es: TranslationType = {
   forexDescription: "Opere con pares de divisas",
   indicesDescription: "Opere con índices de mercado principales",
   aiEtfsDescription: "Opere con ETFs centrados en IA"
-};
+}
