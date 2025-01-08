@@ -20,6 +20,25 @@ interface AssetSelectorProps {
 export const AssetSelector = ({ onSelect, lang }: AssetSelectorProps) => {
   const t = translations[lang];
 
+  const getTranslatedTitle = (id: string) => {
+    switch (id) {
+      case 'Indices':
+        return t.indices;
+      case 'Stocks':
+        return t.stocks;
+      case 'Crypto':
+        return t.crypto;
+      case 'ETFs':
+        return t.etfs;
+      case 'AI_ETFs':
+        return t.ai_etfs;
+      case 'Forex':
+        return t.forex;
+      default:
+        return id;
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
       {assetTypes.map((type, index) => (
@@ -38,7 +57,9 @@ export const AssetSelector = ({ onSelect, lang }: AssetSelectorProps) => {
                 <type.icon className="h-5 w-5 md:h-6 md:w-6 text-white" />
               </div>
               <div className="flex-grow">
-                <h3 className="text-lg md:text-xl font-montserrat font-semibold text-slate-800">{t[type.id.toLowerCase() as keyof typeof t]}</h3>
+                <h3 className="text-lg md:text-xl font-montserrat font-semibold text-slate-800">
+                  {getTranslatedTitle(type.id)}
+                </h3>
                 <p className="text-sm md:text-base text-slate-600">{t[type.translationKey]}</p>
               </div>
               <ChevronRight className="h-5 w-5 md:h-6 md:w-6 text-blue-500" />
