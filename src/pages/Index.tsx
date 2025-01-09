@@ -7,11 +7,13 @@ import { Features } from '@/components/home/Features';
 import { Header } from '@/components/home/Header';
 import { Welcome } from '@/components/home/Welcome';
 import { MainContent } from '@/components/home/MainContent';
+import { LeadsManager } from '@/components/admin/LeadsManager';
 import { isValidLanguage, defaultLanguage, type Language } from "@/utils/i18n";
 
 const Index = () => {
   const [session, setSession] = useState<any>(null);
   const [step, setStep] = useState(1);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { lang } = useParams();
@@ -24,12 +26,21 @@ const Index = () => {
 
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       setSession(currentSession);
+      // Check if user is admin (you can set this based on email or other criteria)
+      if (currentSession?.user?.email === 'your-admin-email@example.com') {
+        setIsAdmin(true);
+      }
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, currentSession) => {
       setSession(currentSession);
+      if (currentSession?.user?.email === 'your-admin-email@example.com') {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -39,6 +50,7 @@ const Index = () => {
     try {
       await supabase.auth.signOut();
       setStep(1);
+      setIsAdmin(false);
       toast({
         title: "Signed out successfully",
         description: "You have been signed out of your account.",
@@ -71,12 +83,18 @@ const Index = () => {
             <LoginPage lang={lang as Language} />
           </div>
         ) : (
-          <MainContent 
-            step={step}
-            setStep={setStep}
-            session={session}
-            lang={lang as Language}
-          />
+          <>
+            {isAdmin ? (
+              <LeadsManager />
+            ) : (
+              <MainContent 
+                step={step}
+                setStep={setStep}
+                session={session}
+                lang={lang as Language}
+              />
+            )}
+          </>
         )}
       </main>
     </div>
