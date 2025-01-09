@@ -1,110 +1,74 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-
-async function fetchAlphaVantagePrice(symbol: string): Promise<number | null> {
-  try {
-    const ALPHA_VANTAGE_API_KEY = Deno.env.get('ALPHA_VANTAGE_API_KEY');
-    console.log('Fetching price from Alpha Vantage for symbol:', symbol);
-    
-    const response = await fetch(
-      `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`
-    );
-    
-    if (!response.ok) {
-      console.error('Alpha Vantage API error:', await response.text());
-      return null;
-    }
-    
-    const data = await response.json();
-    console.log('Alpha Vantage response:', data);
-    
-    if (data['Global Quote'] && data['Global Quote']['05. price']) {
-      return parseFloat(data['Global Quote']['05. price']);
-    }
-    console.error('Alpha Vantage API response format unexpected:', data);
-    return null;
-  } catch (error) {
-    console.error('Alpha Vantage API error:', error);
-    return null;
-  }
 }
 
-async function fetchFinnhubPrice(symbol: string): Promise<number | null> {
-  try {
-    const FINNHUB_API_KEY = Deno.env.get('FINNHUB_API_KEY');
-    console.log('Fetching price from Finnhub for symbol:', symbol);
-    
-    const response = await fetch(
-      `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`
-    );
-    
-    if (!response.ok) {
-      console.error('Finnhub API error:', await response.text());
-      return null;
-    }
-    
-    const data = await response.json();
-    console.log('Finnhub response:', data);
-    
-    if (data.c) {
-      return data.c;
-    }
-    console.error('Finnhub API response format unexpected:', data);
-    return null;
-  } catch (error) {
-    console.error('Finnhub API error:', error);
-    return null;
-  }
-}
+console.log('Hello from fetch-stock-price function!')
 
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    const { symbol } = await req.json();
-    console.log('Received request for symbol:', symbol);
+    const { symbol } = await req.json()
     
     if (!symbol) {
-      return new Response(
-        JSON.stringify({ error: 'Symbol is required' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
-      );
+      throw new Error('Symbol is required')
     }
 
-    // Try Alpha Vantage first
-    let price = await fetchAlphaVantagePrice(symbol);
+    console.log('Fetching price for symbol:', symbol)
+
+    // Construct proper URL for the API call
+    const baseUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/'
+    const url = `${baseUrl}${symbol}`
+
+    console.log('Fetching from URL:', url)
+
+    const response = await fetch(url)
     
-    // If Alpha Vantage fails, try Finnhub as fallback
-    if (!price) {
-      console.log('Alpha Vantage failed, trying Finnhub for symbol:', symbol);
-      price = await fetchFinnhubPrice(symbol);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch price: ${response.status} ${response.statusText}`)
     }
 
-    if (!price) {
-      return new Response(
-        JSON.stringify({ error: 'Could not fetch price from any provider' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 503 }
-      );
+    const data = await response.json()
+    
+    if (!data?.chart?.result?.[0]?.meta?.regularMarketPrice) {
+      throw new Error('No price data available')
     }
 
-    console.log('Successfully fetched price for', symbol, ':', price);
+    const price = data.chart.result[0].meta.regularMarketPrice
+
+    console.log('Successfully fetched price:', price)
+
     return new Response(
       JSON.stringify({ price }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+      { 
+        headers: { 
+          ...corsHeaders,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
 
   } catch (error) {
-    console.error('Error processing request:', error);
+    console.error('Error in fetch-stock-price:', error.message)
+    
     return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
-    );
+      JSON.stringify({ 
+        error: error.message || 'Failed to fetch stock price'
+      }),
+      { 
+        status: 400,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
   }
-});
+})
