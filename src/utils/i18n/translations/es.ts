@@ -46,6 +46,6 @@ export const es: TranslationType = {
   etfsDescription: "Opere con fondos cotizados",
   forexDescription: "Opere con pares de divisas",
   indicesDescription: "Opere con índices de mercado principales",
-  aiEtfsDescription: "Opere con ETFs centrados en IA"
+  aiEtfsDescription: "Opere con ETFs centrados en IA",
   notAuthenticated: "Debes iniciar sesión para hacer predicciones"
 };

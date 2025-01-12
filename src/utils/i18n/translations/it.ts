@@ -46,6 +46,6 @@ export const it: TranslationType = {
   etfsDescription: "Fai trading su fondi quotati",
   forexDescription: "Fai trading su coppie di valute",
   indicesDescription: "Fai trading sui principali indici di mercato",
-  aiEtfsDescription: "Fai trading su ETF focalizzati sull'IA"
+  aiEtfsDescription: "Fai trading su ETF focalizzati sull'IA",
   notAuthenticated: "Devi essere loggato per fare previsioni"
 };
