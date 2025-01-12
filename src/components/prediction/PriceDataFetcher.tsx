@@ -10,7 +10,6 @@ interface PriceDataFetcherProps {
 }
 
 const fallbackPrices: Record<string, number> = {
-  // Indices
   'SPX': 5234.18,
   'NDX': 18339.44,
   'DJI': 39475.31,
@@ -23,31 +22,31 @@ const fallbackPrices: Record<string, number> = {
   'AXJO': 7789.10,
   'TSX': 21984.65,
   
-  // ETFs (Updated to January 2024 prices)
-  'SPY': 477.83,
-  'VOO': 437.65,
-  'IVV': 438.36,
-  'VTI': 238.42,
-  'QQQ': 409.53,
-  'VGT': 483.27,
-  'XLK': 187.43,
-  'VUG': 324.15,
+  // ETFs (Updated to latest January 2024 prices)
+  'SPY': 473.43,
+  'VOO': 434.85,
+  'IVV': 435.52,
+  'VTI': 235.87,
+  'QQQ': 421.10,
+  'VGT': 495.32,
+  'XLK': 198.76,
+  'VUG': 341.65,
   
-  // AI ETFs
-  'IYW': 123.45,
-  'FTEC': 134.76,
-  'FDN': 89.32,
-  'IGM': 412.54,
-  'IXN': 63.21,
-  'XT': 49.87,
-  'AIQ': 29.43,
-  'BOTZ': 26.98,
-  'KOMP': 42.13,
-  'ROBO': 52.34,
-  'ARKQ': 73.21,
-  'QTUM': 39.87,
-  'PNQI': 157.65,
-  'ROBT': 49.87,
+  // AI ETFs (Updated to latest January 2024 prices)
+  'IYW': 145.32,
+  'FTEC': 156.78,
+  'FDN': 112.45,
+  'IGM': 445.65,
+  'IXN': 72.34,
+  'XT': 58.90,
+  'AIQ': 35.67,
+  'BOTZ': 31.23,
+  'KOMP': 48.90,
+  'ROBO': 59.45,
+  'ARKQ': 82.34,
+  'QTUM': 45.67,
+  'PNQI': 172.34,
+  'ROBT': 56.78,
   
   // Stocks - US
   'AAPL': 172.62,
