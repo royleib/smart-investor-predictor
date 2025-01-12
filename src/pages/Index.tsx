@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Header } from '@/components/home/Header';
 import { LeadsManager } from '@/components/admin/LeadsManager';
@@ -17,9 +17,15 @@ const Index = ({ requireAuth = false }: IndexProps) => {
   const { session, isAdmin, handleSignOut } = useAuthState();
   const navigate = useNavigate();
   const { lang } = useParams();
-  
-  if (!isValidLanguage(lang)) {
-    navigate(`/${defaultLanguage}`, { replace: true });
+
+  useEffect(() => {
+    if (!isValidLanguage(lang)) {
+      navigate(`/${defaultLanguage}`, { replace: true });
+    }
+  }, [lang, navigate]);
+
+  // If language is invalid, don't render anything until navigation completes
+  if (!lang || !isValidLanguage(lang)) {
     return null;
   }
 
