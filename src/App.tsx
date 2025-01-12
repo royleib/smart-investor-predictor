@@ -12,7 +12,8 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          <Route path="/:lang?" element={<Index />} />
+          <Route path="/:lang?/auth" element={<Index requireAuth={true} />} />
+          <Route path="/:lang?" element={<Index requireAuth={false} />} />
           <Route path="*" element={<Navigate to={`/${defaultLanguage}`} />} />
         </Routes>
       </BrowserRouter>
