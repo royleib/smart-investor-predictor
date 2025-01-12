@@ -1,11 +1,13 @@
-export type Language = 'en' | 'de' | 'es' | 'it' | 'fr';
+export type Language = 'en' | 'de' | 'es' | 'it' | 'fr' | 'pt' | 'nl';
 
 export const languages = {
   en: 'English',
   de: 'Deutsch',
   es: 'Español',
   it: 'Italiano',
-  fr: 'Français'
+  fr: 'Français',
+  pt: 'Português',
+  nl: 'Nederlands'
 };
 
 export const defaultLanguage: Language = 'en';
