@@ -8,7 +8,7 @@ import { Header } from '@/components/home/Header';
 import { Welcome } from '@/components/home/Welcome';
 import { MainContent } from '@/components/home/MainContent';
 import { LeadsManager } from '@/components/admin/LeadsManager';
-import { isValidLanguage, defaultLanguage, type Language } from "@/utils/i18n/types";
+import { isValidLanguage, defaultLanguage, type Language } from "@/utils/i18n";
 
 const Index = () => {
   const [session, setSession] = useState<any>(null);

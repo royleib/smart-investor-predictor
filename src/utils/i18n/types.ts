@@ -57,4 +57,10 @@ export interface TranslationType {
   yearlyForecast: string;
   increase: string;
   decrease: string;
+  stocksDescription: string;
+  cryptoDescription: string;
+  etfsDescription: string;
+  forexDescription: string;
+  indicesDescription: string;
+  aiEtfsDescription: string;
 }
