@@ -1,3 +1,5 @@
 project_id = "psehijuirmgbbhmcxsqj"
-
-[global.env]
+[functions.fetch-stock-price]
+verify_jwt = false
+[functions.fetch-etf-price]
+verify_jwt = false

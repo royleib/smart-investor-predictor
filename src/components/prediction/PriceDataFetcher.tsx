@@ -101,19 +101,37 @@ export const PriceDataFetcher = ({ step, selectedSymbol, selectedAssetType, setC
     const fetchPrice = async () => {
       if (step === 5 && selectedSymbol) {
         try {
-          // Only fetch real-time prices for US stocks for now
+          // Handle ETFs with the new Edge Function
+          if (selectedAssetType === 'ETFs' || selectedAssetType === 'AI_ETFs') {
+            const { data, error } = await supabase.functions.invoke('fetch-etf-price', {
+              body: { symbol: selectedSymbol }
+            });
+
+            if (error) {
+              console.error('Error fetching ETF price:', error);
+              throw error;
+            }
+
+            if (data.price) {
+              console.log('Real-time price for ETF', selectedSymbol, ':', data.price);
+              setCurrentPrice(data.price);
+              return;
+            }
+          }
+
+          // Handle US stocks
           if (selectedAssetType === 'Stocks' && !selectedSymbol.includes('.')) {
             const { data, error } = await supabase.functions.invoke('fetch-stock-price', {
               body: { symbol: selectedSymbol }
             });
 
             if (error) {
-              console.error('Error fetching price:', error);
+              console.error('Error fetching stock price:', error);
               throw error;
             }
 
             if (data.price) {
-              console.log('Real-time price for', selectedSymbol, ':', data.price);
+              console.log('Real-time price for stock', selectedSymbol, ':', data.price);
               setCurrentPrice(data.price);
               return;
             }
