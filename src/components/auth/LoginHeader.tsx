@@ -10,10 +10,10 @@ export const LoginHeader = ({ lang }: LoginHeaderProps) => {
   return (
     <div className="space-y-2 text-center mb-8">
       <h2 className="text-2xl font-semibold tracking-tight">
-        {t.signUp}
+        AI-Powered Trading Insights
       </h2>
       <p className="text-sm text-muted-foreground">
-        Get instant access to AI-powered market predictions
+        Get professional market predictions powered by advanced artificial intelligence
       </p>
     </div>
   );
