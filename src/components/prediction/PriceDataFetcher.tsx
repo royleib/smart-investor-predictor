@@ -86,13 +86,13 @@ const fallbackPrices: Record<string, number> = {
   '7203.TYO': 3125.50,
   '1299.HKG': 72.85,
   
-  // Crypto
-  'BTC': 100878.77,
-  'ETH': 5524.83,
+  // Crypto (Updated to January 2024 prices)
+  'BTC': 42800.50,
+  'ETH': 2280.75,
   'USDT': 1.00,
-  'BNB': 576.82,
-  'SOL': 188.45,
-  'XRP': 0.89
+  'BNB': 305.45,
+  'SOL': 98.30,
+  'XRP': 0.57
 };
 
 export const PriceDataFetcher = ({ step, selectedSymbol, selectedAssetType, setCurrentPrice }: PriceDataFetcherProps) => {
