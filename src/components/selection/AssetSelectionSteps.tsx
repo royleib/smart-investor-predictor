@@ -53,57 +53,8 @@ export const AssetSelectionSteps = ({
   };
 
   const handleSymbolSelect = async (symbol: string) => {
-    if (!session?.user?.id) {
-      toast({
-        title: t.error || "Error",
-        description: t.notAuthenticated || "You must be logged in to make predictions",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      // First check if user has reached their prediction limit
-      const { data: predictions, error: countError, count } = await supabase
-        .from('user_predictions')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', session.user.id);
-
-      if (countError) {
-        throw new Error(countError.message);
-      }
-
-      if (count !== null && count >= 2) {
-        setShowLimitAlert(true);
-        return;
-      }
-
-      // If not at limit, insert new prediction
-      const { error: insertError } = await supabase
-        .from('user_predictions')
-        .insert([{ 
-          user_id: session.user.id, 
-          symbol: symbol 
-        }]);
-
-      if (insertError) {
-        throw new Error(insertError.message);
-      }
-
-      setSelectedSymbol(symbol);
-      setStep(5);
-
-    } catch (error) {
-      console.error('Error handling symbol selection:', error);
-      toast({
-        title: t.error || "Error",
-        description: t.unexpectedError || "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    setSelectedSymbol(symbol);
+    setStep(5);
   };
 
   return (
