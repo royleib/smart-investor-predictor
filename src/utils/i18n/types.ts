@@ -63,4 +63,5 @@ export interface TranslationType {
   forexDescription: string;
   indicesDescription: string;
   aiEtfsDescription: string;
+  notAuthenticated: string;  // Added this new translation key
 }
