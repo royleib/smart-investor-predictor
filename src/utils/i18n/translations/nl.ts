@@ -41,7 +41,7 @@ export const nl: TranslationType = {
   yearlyForecast: "Onze jaarvoorspelling toont een {direction} van {percentage}%, gebaseerd op uitgebreide analyse van marktcycli, industriële ontwikkelingen en lange termijn groeipotentieel. Dit houdt rekening met macro-economische factoren en industriële transformaties.",
   increase: "stijging",
   decrease: "daling",
-  stocksDescription: "Handel in aandelen van belangrijke markten",
+  stocksDescription: "Handel in aandelen op belangrijke markten",
   cryptoDescription: "Handel in populaire cryptovaluta",
   etfsDescription: "Gediversifieerde beleggingsfondsen",
   forexDescription: "Valutahandelsparen",
