@@ -1,17 +1,19 @@
-export type Language = 'en' | 'de' | 'es' | 'it' | 'fr';
+export type Language = 'en' | 'de' | 'es' | 'it' | 'fr' | 'pt' | 'nl';
 
-export const languages = {
+export const languages: Record<Language, string> = {
   en: 'English',
   de: 'Deutsch',
   es: 'Español',
   it: 'Italiano',
-  fr: 'Français'
+  fr: 'Français',
+  pt: 'Português',
+  nl: 'Nederlands'
 };
 
 export const defaultLanguage: Language = 'en';
 
-export const isValidLanguage = (lang: string): lang is Language => {
-  return Object.keys(languages).includes(lang);
+export const isValidLanguage = (lang: string | undefined): lang is Language => {
+  return lang !== undefined && Object.keys(languages).includes(lang);
 };
 
 export const translations = {
@@ -214,5 +216,89 @@ export const translations = {
     yearlyForecast: "Notre prévision annuelle montre une {direction} de {percentage}%, basée sur une analyse complète des cycles de marché, des développements industriels et du potentiel de croissance à long terme. Cela prend en compte les facteurs macroéconomiques et les transformations industrielles.",
     increase: "augmentation",
     decrease: "baisse"
+  },
+  pt: {
+    welcome: "Previsões Inteligentes de Mercado",
+    chooseInvestment: "Escolha sua categoria de investimento e obtenha insights baseados em IA",
+    stocks: "Negociar ações",
+    crypto: "Ativos digitais",
+    etfs: "Fundos negociados em bolsa",
+    forex: "Câmbio de moedas",
+    indices: "Índices de mercado",
+    ai_etfs: "ETFs focados em IA",
+    startTrading: "Começar a Negociar",
+    analysis: "Análise",
+    currentPrice: "Preço Atual",
+    probability: "Probabilidade",
+    signOut: "Sair",
+    email: "Email",
+    password: "Senha",
+    signUp: "Cadastrar",
+    signIn: "Entrar",
+    error: "Erro",
+    emailAlreadyRegistered: "Este email já está registrado. Por favor, tente fazer login.",
+    failedToSavePrediction: "Falha ao salvar a previsão. Por favor, tente novamente.",
+    unexpectedError: "Ocorreu um erro inesperado. Por favor, tente novamente.",
+    selectAssetType: "Selecione o Tipo de Ativo",
+    selectMarket: "Selecione o Mercado",
+    selectStock: "Selecione Ação de",
+    selectCrypto: "Selecione Criptomoeda",
+    us: "Mercado EUA",
+    eu: "Mercados Europeus",
+    asia: "Mercados Asiáticos",
+    predictionsFor: "Previsões para",
+    startTradingOn: "Comece a negociar {symbol} na eToro",
+    week: "1 Semana",
+    month: "1 Mês",
+    sixMonths: "6 Meses",
+    year: "1 Ano",
+    shortTermForecast: "Com base em indicadores de mercado de curto prazo e padrões recentes de negociação, esperamos um {direction} de {percentage}% na próxima semana. Esta previsão considera o sentimento atual do mercado e fatores técnicos imediatos.",
+    monthlyForecast: "Nossa projeção mensal considera tendências mais amplas do mercado, próximos eventos do setor e análise técnica, sugerindo um {direction} de {percentage}%. Isso leva em conta possíveis ajustes do mercado e momentum do setor.",
+    sixMonthForecast: "Olhando para um horizonte de 6 meses, nossa análise de tendências de longo prazo, ciclos de mercado e fatores fundamentais aponta para um {direction} de {percentage}%. Esta previsão incorpora possíveis desenvolvimentos do mercado e evolução do setor.",
+    yearlyForecast: "Nossa previsão anual mostra um {direction} de {percentage}%, baseada em análise abrangente de ciclos de mercado, desenvolvimentos da indústria e potencial de crescimento de longo prazo. Isso considera fatores macroeconômicos e transformações industriais.",
+    increase: "aumento",
+    decrease: "diminuição"
+  },
+  nl: {
+    welcome: "Slimme Marktvoorspellingen",
+    chooseInvestment: "Kies uw investeringscategorie en krijg AI-gestuurde inzichten",
+    stocks: "Handel in aandelen",
+    crypto: "Digitale activa",
+    etfs: "Beursverhandelde fondsen",
+    forex: "Valutahandel",
+    indices: "Marktindices",
+    ai_etfs: "AI-gerichte ETFs",
+    startTrading: "Begin met Handelen",
+    analysis: "Analyse",
+    currentPrice: "Huidige Prijs",
+    probability: "Waarschijnlijkheid",
+    signOut: "Uitloggen",
+    email: "E-mail",
+    password: "Wachtwoord",
+    signUp: "Registreren",
+    signIn: "Inloggen",
+    error: "Fout",
+    emailAlreadyRegistered: "Dit e-mailadres is al geregistreerd. Probeer in te loggen.",
+    failedToSavePrediction: "Voorspelling opslaan mislukt. Probeer het opnieuw.",
+    unexpectedError: "Er is een onverwachte fout opgetreden. Probeer het opnieuw.",
+    selectAssetType: "Selecteer Activatype",
+    selectMarket: "Selecteer Markt",
+    selectStock: "Selecteer Aandeel van",
+    selectCrypto: "Selecteer Cryptovaluta",
+    us: "Amerikaanse Markt",
+    eu: "Europese Markten",
+    asia: "Aziatische Markten",
+    predictionsFor: "Voorspellingen voor",
+    startTradingOn: "Begin met handelen in {symbol} op eToro",
+    week: "1 Week",
+    month: "1 Maand",
+    sixMonths: "6 Maanden",
+    year: "1 Jaar",
+    shortTermForecast: "Op basis van korte termijn marktindicatoren en recente handelspatronen verwachten we een {direction} van {percentage}% in de komende week. Deze voorspelling houdt rekening met het huidige marktsentiment en directe technische factoren.",
+    monthlyForecast: "Onze maandprognose houdt rekening met bredere markttrends, aankomende sectorgebeurtenissen en technische analyse, wat wijst op een {direction} van {percentage}%. Dit houdt rekening met mogelijke marktaanpassingen en sectormomentum.",
+    sixMonthForecast: "Kijkend naar een horizon van 6 maanden, wijst onze analyse van lange termijn trends, marktcycli en fundamentele factoren op een {direction} van {percentage}%. Deze voorspelling omvat mogelijke marktontwikkelingen en sectorevolutie.",
+    yearlyForecast: "Onze jaarvoorspelling toont een {direction} van {percentage}%, gebaseerd op uitgebreide analyse van marktcycli, industriële ontwikkelingen en lange termijn groeipotentieel. Dit houdt rekening met macro-economische factoren en industriële transformaties.",
+    increase: "stijging",
+    decrease: "daling"
   }
 };
