@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut, Globe } from 'lucide-react';
 import { Logo } from "@/components/ui/Logo";
 import { motion } from "framer-motion";
-import { languages, type Language } from "@/utils/i18n";
+import { languages, type Language } from "@/utils/i18n/types";
 import { Link, useLocation } from "react-router-dom";
 import {
   DropdownMenu,
@@ -19,6 +19,8 @@ interface HeaderProps {
 
 export const Header = ({ onSignOut, isAuthenticated, currentLang }: HeaderProps) => {
   const location = useLocation();
+  console.log('Current language:', currentLang);
+  console.log('Available languages:', languages);
 
   return (
     <motion.header 

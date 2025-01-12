@@ -23,8 +23,6 @@ export interface TranslationType {
   crypto: string;
   etfs: string;
   forex: string;
-  indices: string;
-  ai_etfs: string;
   startTrading: string;
   analysis: string;
   currentPrice: string;
@@ -57,10 +55,4 @@ export interface TranslationType {
   yearlyForecast: string;
   increase: string;
   decrease: string;
-  stocksDescription: string;
-  cryptoDescription: string;
-  etfsDescription: string;
-  forexDescription: string;
-  indicesDescription: string;
-  aiEtfsDescription: string;
 }
