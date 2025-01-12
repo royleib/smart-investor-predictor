@@ -8,7 +8,7 @@ import { Header } from '@/components/home/Header';
 import { Welcome } from '@/components/home/Welcome';
 import { MainContent } from '@/components/home/MainContent';
 import { LeadsManager } from '@/components/admin/LeadsManager';
-import { isValidLanguage, defaultLanguage, type Language } from "@/utils/i18n";
+import { isValidLanguage, defaultLanguage, type Language } from "@/utils/i18n/types";
 
 const Index = () => {
   const [session, setSession] = useState<any>(null);
@@ -26,7 +26,6 @@ const Index = () => {
 
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       setSession(currentSession);
-      // Check if user is admin (you can set this based on email or other criteria)
       if (currentSession?.user?.email === 'your-admin-email@example.com') {
         setIsAdmin(true);
       }

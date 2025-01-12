@@ -1,6 +1,6 @@
 export type Language = 'en' | 'de' | 'es' | 'it' | 'fr' | 'pt' | 'nl';
 
-export const languages = {
+export const languages: Record<Language, string> = {
   en: 'English',
   de: 'Deutsch',
   es: 'Español',
@@ -12,8 +12,8 @@ export const languages = {
 
 export const defaultLanguage: Language = 'en';
 
-export const isValidLanguage = (lang: string): lang is Language => {
-  return Object.keys(languages).includes(lang);
+export const isValidLanguage = (lang: string | undefined): lang is Language => {
+  return lang !== undefined && Object.keys(languages).includes(lang);
 };
 
 export interface TranslationType {
@@ -57,10 +57,4 @@ export interface TranslationType {
   yearlyForecast: string;
   increase: string;
   decrease: string;
-  stocksDescription: string;
-  cryptoDescription: string;
-  etfsDescription: string;
-  forexDescription: string;
-  indicesDescription: string;
-  aiEtfsDescription: string;
 }
