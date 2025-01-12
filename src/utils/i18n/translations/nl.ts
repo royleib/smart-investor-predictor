@@ -46,5 +46,6 @@ export const nl: TranslationType = {
   etfsDescription: "Gediversifieerde beleggingsfondsen",
   forexDescription: "Valutahandelsparen",
   indicesDescription: "Belangrijke marktindices",
-  aiEtfsDescription: "AI-gerichte beleggingsfondsen"
+  aiEtfsDescription: "AI-gerichte beleggingsfondsen",
+  notAuthenticated: "U moet ingelogd zijn om voorspellingen te doen"
 };

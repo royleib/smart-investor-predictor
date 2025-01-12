@@ -46,5 +46,6 @@ export const pt: TranslationType = {
   etfsDescription: "Fundos de investimento diversificados",
   forexDescription: "Pares de negociação de moedas",
   indicesDescription: "Principais índices de mercado",
-  aiEtfsDescription: "Fundos de investimento focados em IA"
+  aiEtfsDescription: "Fundos de investimento focados em IA",
+  notAuthenticated: "Você precisa estar logado para fazer previsões"
 };

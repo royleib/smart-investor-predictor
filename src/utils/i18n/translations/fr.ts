@@ -46,5 +46,6 @@ export const fr: TranslationType = {
   etfsDescription: "Tradez des fonds négociés en bourse",
   forexDescription: "Tradez des paires de devises",
   indicesDescription: "Tradez les principaux indices boursiers",
-  aiEtfsDescription: "Tradez des ETFs axés sur l'IA"
-}
+  aiEtfsDescription: "Tradez des ETFs axés sur l'IA",
+  notAuthenticated: "Vous devez être connecté pour faire des prédictions"
+};

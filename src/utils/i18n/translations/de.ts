@@ -46,5 +46,6 @@ export const de: TranslationType = {
   etfsDescription: "Handeln Sie börsengehandelte Fonds",
   forexDescription: "Handeln Sie Währungspaare",
   indicesDescription: "Handeln Sie wichtige Marktindizes",
-  aiEtfsDescription: "Handeln Sie KI-fokussierte ETFs"
-}
+  aiEtfsDescription: "Handeln Sie KI-fokussierte ETFs",
+  notAuthenticated: "Sie müssen angemeldet sein, um Vorhersagen zu treffen"
+};

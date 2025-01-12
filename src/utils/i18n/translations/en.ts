@@ -46,5 +46,6 @@ export const en: TranslationType = {
   etfsDescription: "Technical Indicators",
   forexDescription: "Enterprise Security - Bank-grade encryption and security",
   indicesDescription: "Real-time Updates - 24/7 market monitoring and alerts",
-  aiEtfsDescription: "Active Community - Join our growing trading community"
+  aiEtfsDescription: "Active Community - Join our growing trading community",
+  notAuthenticated: "You must be logged in to make predictions"
 };
