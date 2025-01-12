@@ -13,7 +13,7 @@ export const LoginHeader = ({ lang }: LoginHeaderProps) => {
         {t.signUp}
       </h2>
       <p className="text-sm text-muted-foreground">
-        Get instant access to AI-powered market predictions
+        Access AI-powered market predictions and professional trading insights
       </p>
     </div>
   );

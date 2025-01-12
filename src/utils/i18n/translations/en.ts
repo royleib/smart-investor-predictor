@@ -1,8 +1,8 @@
 import type { TranslationType } from '../types';
 
 export const en: TranslationType = {
-  welcome: "AI-Powered Market Predictions",
-  chooseInvestment: "Get professional-grade market insights powered by advanced artificial intelligence",
+  welcome: "AI-Powered Trading Insights",
+  chooseInvestment: "Get professional market predictions powered by advanced artificial intelligence",
   stocks: "Trade Stocks",
   crypto: "Digital Assets",
   etfs: "ETF Trading",
@@ -16,7 +16,7 @@ export const en: TranslationType = {
   signOut: "Sign Out",
   email: "Email",
   password: "Password",
-  signUp: "Get Started Now",
+  signUp: "Access Market Predictions",
   signIn: "Sign In",
   error: "Error",
   emailAlreadyRegistered: "This email is already registered. Please try signing in instead.",
@@ -35,16 +35,16 @@ export const en: TranslationType = {
   month: "1 Month",
   sixMonths: "6 Months",
   year: "1 Year",
-  shortTermForecast: "Based on our AI analysis of short-term market indicators and recent trading patterns, we expect a {direction} of {percentage}% in the next week.",
-  monthlyForecast: "Our monthly projection, incorporating broader market trends, upcoming sector events, and technical analysis, suggests a {direction} of {percentage}%.",
-  sixMonthForecast: "Looking at a 6-month horizon, our analysis of long-term trends, market cycles, and fundamental factors indicates a {direction} of {percentage}%.",
-  yearlyForecast: "Our annual forecast shows a {direction} of {percentage}%, based on comprehensive analysis of market cycles, industry developments, and long-term growth potential.",
+  shortTermForecast: "Our AI analysis indicates a potential {direction} of {percentage}% within the next week, based on current market patterns and technical indicators.",
+  monthlyForecast: "Monthly analysis suggests a {direction} of {percentage}%, considering market trends and upcoming events.",
+  sixMonthForecast: "Six-month projection shows a possible {direction} of {percentage}%, based on long-term market analysis.",
+  yearlyForecast: "Yearly forecast indicates a {direction} of {percentage}%, factoring in market cycles and growth trends.",
   increase: "increase",
   decrease: "decrease",
-  stocksDescription: "Access AI-powered predictions for major stock markets",
-  cryptoDescription: "Trade popular cryptocurrencies with AI insights",
-  etfsDescription: "Smart ETF trading with predictive analytics",
-  forexDescription: "AI-driven currency pair predictions",
-  indicesDescription: "Major market indices forecasting",
-  aiEtfsDescription: "Specialized AI-focused ETF predictions"
-}
+  stocksDescription: "Get AI predictions for major stock markets",
+  cryptoDescription: "Smart cryptocurrency trading insights",
+  etfsDescription: "Data-driven ETF investment signals",
+  forexDescription: "Currency pair trading predictions",
+  indicesDescription: "Major market indices analysis",
+  aiEtfsDescription: "AI and technology sector ETF insights"
+};
