@@ -2,13 +2,39 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from "@/integrations/supabase/client";
 import { type Language, translations } from "@/utils/i18n";
+import { useEffect } from 'react';
 
 interface LoginFormProps {
   lang: Language;
 }
 
+declare global {
+  interface Window {
+    gtag: (...args: any[]) => void;
+  }
+}
+
 export const LoginForm = ({ lang }: LoginFormProps) => {
   const t = translations[lang];
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_UP') {
+        // Track conversion
+        if (window.gtag) {
+          window.gtag('event', 'conversion', {
+            'send_to': 'AW-11552566208/P_X3CML49oIaEMDX2IQr',
+            'value': 1.0,
+            'currency': 'ILS'
+          });
+        }
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <div className="relative">
