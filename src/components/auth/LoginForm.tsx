@@ -3,6 +3,7 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from "@/integrations/supabase/client";
 import { type Language, translations } from "@/utils/i18n";
 import { useEffect } from 'react';
+import type { AuthChangeEvent } from '@supabase/supabase-js';
 
 interface LoginFormProps {
   lang: Language;
@@ -18,7 +19,7 @@ export const LoginForm = ({ lang }: LoginFormProps) => {
   const t = translations[lang];
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent) => {
       if (event === 'SIGNED_UP') {
         // Track conversion
         if (window.gtag) {
