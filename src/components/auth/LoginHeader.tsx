@@ -10,10 +10,10 @@ export const LoginHeader = ({ lang }: LoginHeaderProps) => {
   return (
     <div className="space-y-2 text-center mb-8">
       <h2 className="text-2xl font-semibold tracking-tight">
-        AI-Powered Trading Insights
+        Predict Markets with AI Precision
       </h2>
       <p className="text-sm text-muted-foreground">
-        Get professional market predictions powered by advanced artificial intelligence
+        Get advanced AI-powered predictions for stocks, crypto, ETFs, and forex markets. Make data-driven decisions with institutional-grade analysis.
       </p>
     </div>
   );
