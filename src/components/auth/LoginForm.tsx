@@ -20,7 +20,7 @@ export const LoginForm = ({ lang }: LoginFormProps) => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent) => {
-      if (event === 'SIGNED_UP') {
+      if (event === 'SIGNED_UP' as AuthChangeEvent) {
         // Track conversion
         if (window.gtag) {
           window.gtag('event', 'conversion', {
