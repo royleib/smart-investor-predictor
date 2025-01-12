@@ -36,6 +36,7 @@ export const AssetSelectionSteps = ({
   const { toast } = useToast();
   const t = translations[lang];
   const [showLimitAlert, setShowLimitAlert] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleAssetTypeSelect = (type: string) => {
     setSelectedAssetType(type);
@@ -52,32 +53,47 @@ export const AssetSelectionSteps = ({
   };
 
   const handleSymbolSelect = async (symbol: string) => {
+    if (!session?.user?.id) {
+      toast({
+        title: t.error || "Error",
+        description: t.notAuthenticated || "You must be logged in to make predictions",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
     try {
-      const { count } = await supabase
+      // First check if user has reached their prediction limit
+      const { data: predictions, error: countError, count } = await supabase
         .from('user_predictions')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', session.user.id);
+
+      if (countError) {
+        throw new Error(countError.message);
+      }
 
       if (count !== null && count >= 2) {
         setShowLimitAlert(true);
         return;
       }
 
-      const { error } = await supabase
+      // If not at limit, insert new prediction
+      const { error: insertError } = await supabase
         .from('user_predictions')
-        .insert([{ user_id: session.user.id, symbol }]);
+        .insert([{ 
+          user_id: session.user.id, 
+          symbol: symbol 
+        }]);
 
-      if (error) {
-        toast({
-          title: t.error || "Error",
-          description: t.failedToSavePrediction || "Failed to save prediction. Please try again.",
-          variant: "destructive",
-        });
-        return;
+      if (insertError) {
+        throw new Error(insertError.message);
       }
 
       setSelectedSymbol(symbol);
       setStep(5);
+
     } catch (error) {
       console.error('Error handling symbol selection:', error);
       toast({
@@ -85,6 +101,8 @@ export const AssetSelectionSteps = ({
         description: t.unexpectedError || "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -92,7 +110,7 @@ export const AssetSelectionSteps = ({
     <>
       {showLimitAlert && (
         <PredictionLimitAlert 
-          userId={session.user.id} 
+          userId={session?.user?.id} 
           onClose={() => setShowLimitAlert(false)} 
         />
       )}
@@ -119,6 +137,7 @@ export const AssetSelectionSteps = ({
                 key={market}
                 onClick={() => handleMarketSelect(market)}
                 className="bg-gray-50 p-4 sm:p-6 rounded-xl shadow-sm hover:shadow-md transform hover:scale-[1.01] transition-all border border-gray-200"
+                disabled={isLoading}
               >
                 <h3 className="text-lg sm:text-xl font-montserrat font-semibold text-gray-900">{market}</h3>
                 <p className="text-sm sm:text-base text-gray-600 mt-2">{t[market.toLowerCase() as keyof typeof t] || `${market} Market`}</p>
