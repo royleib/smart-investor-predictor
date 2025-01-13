@@ -27,30 +27,23 @@ serve(async (req) => {
       throw new Error('RapidAPI key not configured')
     }
 
+    // Fixed URL construction
     const baseUrl = 'https://ai-stock-market-forecast-price-predictions-stock-data.p.rapidapi.com'
+    const endpointPath = endpoint === 'historical' ? 'getHistoricalData' : 
+                        endpoint === 'forecast' ? 'forecast' : 
+                        'getStockData'
     
-    // Prepare request body based on endpoint
-    let requestBody: any = { symbol }
-    if (endpoint === 'historical') {
-      const today = new Date()
-      const oneYearAgo = new Date()
-      oneYearAgo.setFullYear(today.getFullYear() - 1)
-      
-      requestBody = {
-        ...requestBody,
-        startDate: oneYearAgo.toISOString().split('T')[0],
-        endDate: today.toISOString().split('T')[0]
-      }
-    }
+    const url = `${baseUrl}/${endpointPath}?noqueue=1`
+    console.log('Making request to:', url)
 
-    const response = await fetch(`${baseUrl}/${endpoint === 'historical' ? 'getHistoricalData' : endpoint === 'forecast' ? 'forecast' : 'getStockData'}?noqueue=1`, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-rapidapi-host': 'ai-stock-market-forecast-price-predictions-stock-data.p.rapidapi.com',
         'x-rapidapi-key': rapidApiKey
       },
-      body: JSON.stringify(requestBody)
+      body: JSON.stringify({ symbol })
     })
 
     // Check specifically for rate limit response
