@@ -38,12 +38,17 @@ serve(async (req) => {
       const baseSymbol = symbol === 'DB' ? 'DB' : symbol.split('.')[0]
       console.log('Processing German stock:', baseSymbol)
       
-      // Try quote endpoint with XETRA exchange first
+      // Try XETRA exchange with detailed error logging
       try {
         const xetraUrl = `https://financialmodelingprep.com/api/v3/quote/${baseSymbol}.XETRA?apikey=${fmpApiKey}`
         console.log('Fetching from XETRA:', xetraUrl)
         
         const xetraResponse = await fetch(xetraUrl)
+        if (!xetraResponse.ok) {
+          console.error('XETRA response not OK:', await xetraResponse.text())
+          throw new Error('XETRA response not OK')
+        }
+        
         const xetraData = await xetraResponse.json()
         console.log('XETRA response:', JSON.stringify(xetraData))
         
@@ -59,12 +64,17 @@ serve(async (req) => {
         console.error('Error fetching from XETRA:', error)
       }
 
-      // Try real-time quote endpoint with .DE
+      // Try real-time quote endpoint with detailed error logging
       try {
         const rtQuoteUrl = `https://financialmodelingprep.com/api/v3/quote-short/${baseSymbol}.DE?apikey=${fmpApiKey}`
         console.log('Fetching real-time quote:', rtQuoteUrl)
         
         const rtResponse = await fetch(rtQuoteUrl)
+        if (!rtResponse.ok) {
+          console.error('Real-time quote response not OK:', await rtResponse.text())
+          throw new Error('Real-time quote response not OK')
+        }
+        
         const rtData = await rtResponse.json()
         console.log('Real-time quote response:', JSON.stringify(rtData))
         
@@ -80,32 +90,35 @@ serve(async (req) => {
         console.error('Error fetching real-time quote:', error)
       }
 
-      // Try Yahoo Finance as backup
+      // Try Yahoo Finance with detailed error logging
       try {
         const yahooSymbol = symbol === 'DB' ? 'DBK.DE' : symbol
-        const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}`
+        const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?interval=1d&range=1d`
         console.log('Fetching from Yahoo Finance:', yahooUrl)
         
         const yahooResponse = await fetch(yahooUrl)
-        if (yahooResponse.ok) {
-          const yahooData = await yahooResponse.json()
-          console.log('Yahoo Finance response:', JSON.stringify(yahooData))
-          
-          if (yahooData?.chart?.result?.[0]?.meta?.regularMarketPrice) {
-            const price = yahooData.chart.result[0].meta.regularMarketPrice
-            console.log('Successfully fetched price from Yahoo Finance:', price)
-            return new Response(
-              JSON.stringify({ price }),
-              { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-            )
-          }
+        if (!yahooResponse.ok) {
+          console.error('Yahoo Finance response not OK:', await yahooResponse.text())
+          throw new Error('Yahoo Finance response not OK')
+        }
+        
+        const yahooData = await yahooResponse.json()
+        console.log('Yahoo Finance response:', JSON.stringify(yahooData))
+        
+        if (yahooData?.chart?.result?.[0]?.meta?.regularMarketPrice) {
+          const price = yahooData.chart.result[0].meta.regularMarketPrice
+          console.log('Successfully fetched price from Yahoo Finance:', price)
+          return new Response(
+            JSON.stringify({ price }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
         }
       } catch (error) {
         console.error('Error fetching from Yahoo Finance:', error)
       }
     }
 
-    // Use Alpha Vantage as final fallback
+    // Use Alpha Vantage as final fallback with better error handling
     const apiKey = Deno.env.get('ALPHA_VANTAGE_API_KEY')
     if (!apiKey) {
       throw new Error('Alpha Vantage API key not configured')
@@ -139,6 +152,11 @@ serve(async (req) => {
     console.log('Fetching from Alpha Vantage:', url)
 
     const response = await fetch(url)
+    if (!response.ok) {
+      console.error('Alpha Vantage response not OK:', await response.text())
+      throw new Error('Alpha Vantage response not OK')
+    }
+    
     const data = await response.json()
     console.log('Alpha Vantage response:', JSON.stringify(data))
     
