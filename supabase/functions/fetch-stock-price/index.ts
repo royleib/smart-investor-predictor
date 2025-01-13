@@ -22,15 +22,35 @@ serve(async (req) => {
 
     console.log('Fetching price for symbol:', symbol)
 
-    // Get Alpha Vantage API key from environment
-    const apiKey = Deno.env.get('ALPHA_VANTAGE_API_KEY')
-    if (!apiKey) {
-      throw new Error('Alpha Vantage API key not configured')
+    // For German stocks, try Financial Modeling Prep first
+    if (symbol.endsWith('.DE') || symbol === 'DB') {
+      const fmpApiKey = Deno.env.get('FMP_API_KEY')
+      if (!fmpApiKey) {
+        throw new Error('Financial Modeling Prep API key not configured')
+      }
+
+      // Convert symbol format for FMP API (e.g., 'SAP.DE' to 'SAP.F')
+      const fmpSymbol = symbol === 'DB' ? 'DB' : `${symbol.split('.')[0]}.F`
+      const fmpUrl = `https://financialmodelingprep.com/api/v3/quote/${fmpSymbol}?apikey=${fmpApiKey}`
+      console.log('Fetching from FMP URL for German stock:', fmpSymbol)
+
+      const fmpResponse = await fetch(fmpUrl)
+      if (fmpResponse.ok) {
+        const fmpData = await fmpResponse.json()
+        if (Array.isArray(fmpData) && fmpData.length > 0 && fmpData[0].price) {
+          const price = fmpData[0].price
+          console.log('Successfully fetched German stock price from FMP:', price)
+          return new Response(
+            JSON.stringify({ price }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+        }
+      }
+      console.log('FMP API response failed or returned no data, trying Yahoo Finance...')
     }
 
-    // For German stocks, try Yahoo Finance first as it tends to have better coverage
+    // Try Yahoo Finance as backup for German stocks
     if (symbol.endsWith('.DE')) {
-      console.log('German stock detected, trying Yahoo Finance first')
       try {
         const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`
         console.log('Fetching from Yahoo Finance URL:', yahooUrl)
@@ -52,7 +72,12 @@ serve(async (req) => {
       }
     }
 
-    // Construct Alpha Vantage API URL with proper exchange handling
+    // Use Alpha Vantage as final fallback
+    const apiKey = Deno.env.get('ALPHA_VANTAGE_API_KEY')
+    if (!apiKey) {
+      throw new Error('Alpha Vantage API key not configured')
+    }
+
     let alphaVantageSymbol = symbol
     if (symbol.includes('.')) {
       const [base, exchange] = symbol.split('.')
