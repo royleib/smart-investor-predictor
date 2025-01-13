@@ -258,25 +258,37 @@ export const StockSelector = ({ onSelect, market, lang = 'en' }: StockSelectorPr
   const t = translations[lang];
 
   const getCountryTranslation = (country: string) => {
-    const translationKeys: Record<string, keyof typeof translations[Language]> = {
-      'Germany': 'germany',
-      'UK': 'uk',
-      'France': 'france',
-      'Italy': 'italy',
-      'Netherlands': 'netherlands'
-    };
-    return t[translationKeys[country] as keyof typeof t] || country;
+    switch (country) {
+      case 'Germany':
+        return t.germany;
+      case 'UK':
+        return t.uk;
+      case 'France':
+        return t.france;
+      case 'Italy':
+        return t.italy;
+      case 'Netherlands':
+        return t.netherlands;
+      default:
+        return country;
+    }
   };
 
   const getCountryDescription = (country: string) => {
-    const descriptionKeys: Record<string, keyof typeof translations[Language]> = {
-      'Germany': 'germanyStocks',
-      'UK': 'ukStocks',
-      'France': 'franceStocks',
-      'Italy': 'italyStocks',
-      'Netherlands': 'netherlandsStocks'
-    };
-    return t[descriptionKeys[country] as keyof typeof t] || `View ${country} stocks`;
+    switch (country) {
+      case 'Germany':
+        return t.germanyStocks;
+      case 'UK':
+        return t.ukStocks;
+      case 'France':
+        return t.franceStocks;
+      case 'Italy':
+        return t.italyStocks;
+      case 'Netherlands':
+        return t.netherlandsStocks;
+      default:
+        return `View ${country} stocks`;
+    }
   };
 
   // For US market, show stocks directly
