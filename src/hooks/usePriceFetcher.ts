@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchStockPrice } from '@/utils/stockPriceUtils';
-import { fallbackPrices } from '@/utils/fallbackPrices';
 
 interface UsePriceFetcherProps {
   step: number;
@@ -41,21 +40,23 @@ export const usePriceFetcher = ({ step, selectedSymbol, selectedAssetType }: Use
           if (price) return price;
         }
 
-        // Fallback to stored prices
-        const fallbackPrice = fallbackPrices[selectedSymbol];
-        if (fallbackPrice) {
-          console.log('Using fallback price for', selectedSymbol, ':', fallbackPrice);
-          if (selectedAssetType === 'Stocks' && !selectedSymbol.includes('.')) {
-            toast({
-              title: "Using Cached Price",
-              description: "Real-time price services are currently unavailable. Using last known price.",
-              variant: "default",
-            });
-          }
-          return fallbackPrice;
+        // Try to get a fallback price from our new Edge Function
+        console.log('Attempting to fetch fallback price for', selectedSymbol);
+        const { data: fallbackData, error: fallbackError } = await supabase.functions.invoke('fetch-fallback-price', {
+          body: { symbol: selectedSymbol }
+        });
+
+        if (!fallbackError && fallbackData?.price) {
+          console.log('Successfully fetched fallback price for', selectedSymbol, ':', fallbackData.price);
+          toast({
+            title: "Using Alternative Price Source",
+            description: "Real-time price services are currently using backup data sources.",
+            variant: "default",
+          });
+          return fallbackData.price;
         }
 
-        console.error('No fallback price available for:', selectedSymbol);
+        console.error('No price available for:', selectedSymbol);
         toast({
           title: "Price Unavailable",
           description: "Could not retrieve price data for this asset.",
@@ -73,10 +74,18 @@ export const usePriceFetcher = ({ step, selectedSymbol, selectedAssetType }: Use
           });
         }
         
-        const fallbackPrice = fallbackPrices[selectedSymbol];
-        if (fallbackPrice) {
-          console.log('Using fallback price after error for', selectedSymbol, ':', fallbackPrice);
-          return fallbackPrice;
+        // Try fallback one last time
+        try {
+          const { data: fallbackData } = await supabase.functions.invoke('fetch-fallback-price', {
+            body: { symbol: selectedSymbol }
+          });
+
+          if (fallbackData?.price) {
+            console.log('Successfully fetched fallback price after error for', selectedSymbol, ':', fallbackData.price);
+            return fallbackData.price;
+          }
+        } catch (fallbackError) {
+          console.error('Error fetching fallback price:', fallbackError);
         }
         
         toast({
