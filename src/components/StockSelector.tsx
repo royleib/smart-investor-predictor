@@ -1,7 +1,8 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { ChevronRight, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 import { translations, type Language } from "@/utils/i18n";
+import { USStocksList } from './stocks/USStocksList';
+import { EUCountrySelector } from './stocks/EUCountrySelector';
+import { CountryStocksList } from './stocks/CountryStocksList';
 
 interface StockSelectorProps {
   onSelect: (symbol: string) => void;
@@ -257,124 +258,35 @@ export const StockSelector = ({ onSelect, market, lang = 'en' }: StockSelectorPr
   const stocks = selectedCountry ? stocksByMarket[selectedCountry as keyof typeof stocksByMarket] : [];
   const t = translations[lang];
 
-  const getCountryTranslation = (country: string) => {
-    switch (country) {
-      case 'Germany':
-        return t.germany;
-      case 'UK':
-        return t.uk;
-      case 'France':
-        return t.france;
-      case 'Italy':
-        return t.italy;
-      case 'Netherlands':
-        return t.netherlands;
-      default:
-        return country;
-    }
-  };
-
-  const getCountryDescription = (country: string) => {
-    switch (country) {
-      case 'Germany':
-        return t.germanyStocks;
-      case 'UK':
-        return t.ukStocks;
-      case 'France':
-        return t.franceStocks;
-      case 'Italy':
-        return t.italyStocks;
-      case 'Netherlands':
-        return t.netherlandsStocks;
-      default:
-        return `View ${country} stocks`;
-    }
-  };
-
   // For US market, show stocks directly
   if (market === 'US') {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-        {stocksByMarket.US.map((stock) => (
-          <Card 
-            key={stock.symbol}
-            className="cursor-pointer bg-white/80 backdrop-blur-sm border-white/20 hover:shadow-lg transition-all hover:scale-105"
-            onClick={() => onSelect(stock.symbol)}
-          >
-            <CardContent className="flex items-center p-6">
-              <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
-                <TrendingUp className="h-6 w-6 text-purple-600" />
-              </div>
-              <div className="flex-grow">
-                <h3 className="text-xl font-montserrat font-semibold text-gray-800">{stock.name}</h3>
-                <p className="text-sm text-gray-600">{stock.symbol} - {stock.description}</p>
-              </div>
-              <ChevronRight className="h-6 w-6 text-gray-400" />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    );
+    return <USStocksList onSelect={onSelect} stocks={stocksByMarket.US} />;
   }
 
   // For EU market, show country selection first
   if (market === 'EU' && !selectedCountry) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-        {['Germany', 'UK', 'France', 'Italy', 'Netherlands'].map((country) => (
-          <Card 
-            key={country}
-            className="cursor-pointer bg-white/80 backdrop-blur-sm border-white/20 hover:shadow-lg transition-all hover:scale-105"
-            onClick={() => setSelectedCountry(country)}
-          >
-            <CardContent className="flex items-center p-6">
-              <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                <TrendingUp className="h-6 w-6 text-blue-600" />
-              </div>
-              <div className="flex-grow">
-                <h3 className="text-xl font-montserrat font-semibold text-gray-800">
-                  {getCountryTranslation(country)}
-                </h3>
-                <p className="text-sm text-gray-600">{getCountryDescription(country)}</p>
-              </div>
-              <ChevronRight className="h-6 w-6 text-gray-400" />
-            </CardContent>
-          </Card>
-        ))}
+      <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200">
+        <h2 className="text-xl sm:text-2xl font-montserrat font-semibold p-4 sm:p-6 text-center text-gray-900">
+          {t.selectStock} {market}
+        </h2>
+        <EUCountrySelector onSelect={setSelectedCountry} lang={lang} />
       </div>
     );
   }
 
   // Show stocks for selected EU country
   return (
-    <div className="space-y-4">
-      <button
-        onClick={() => setSelectedCountry(null)}
-        className="mb-4 text-blue-600 hover:text-blue-800 flex items-center"
-      >
-        <ChevronRight className="h-4 w-4 rotate-180 mr-1" />
-        {t.backToCountries}
-      </button>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {stocks.map((stock) => (
-          <Card 
-            key={stock.symbol}
-            className="cursor-pointer bg-white/80 backdrop-blur-sm border-white/20 hover:shadow-lg transition-all hover:scale-105"
-            onClick={() => onSelect(stock.symbol)}
-          >
-            <CardContent className="flex items-center p-6">
-              <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
-                <TrendingUp className="h-6 w-6 text-purple-600" />
-              </div>
-              <div className="flex-grow">
-                <h3 className="text-xl font-montserrat font-semibold text-gray-800">{stock.name}</h3>
-                <p className="text-sm text-gray-600">{stock.symbol} - {stock.description}</p>
-              </div>
-              <ChevronRight className="h-6 w-6 text-gray-400" />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+    <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200">
+      <h2 className="text-xl sm:text-2xl font-montserrat font-semibold p-4 sm:p-6 text-center text-gray-900">
+        {t.selectStock} {selectedCountry}
+      </h2>
+      <CountryStocksList 
+        onSelect={onSelect} 
+        stocks={stocks} 
+        onBack={() => setSelectedCountry(null)}
+        lang={lang}
+      />
     </div>
   );
 };

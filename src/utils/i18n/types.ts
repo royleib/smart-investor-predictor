@@ -76,4 +76,5 @@ export interface TranslationType {
   italyStocks: string;
   netherlandsStocks: string;
   backToCountries: string;
+  view: string;
 }

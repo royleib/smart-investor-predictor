@@ -58,5 +58,7 @@ export const en: TranslationType = {
   franceStocks: "View French market stocks",
   italyStocks: "View Italian market stocks",
   netherlandsStocks: "View Dutch market stocks",
-  backToCountries: "Back to Countries"
+  backToCountries: "Back to Countries",
+  view: "View",
+  stocks: "stocks",
 };
