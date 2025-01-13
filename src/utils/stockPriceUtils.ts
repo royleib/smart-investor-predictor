@@ -13,7 +13,7 @@ export const fetchStockPrice = async (symbol: string): Promise<number | null> =>
   // Check for rate limit error specifically
   if (rapidApiError?.message === 'RATE_LIMIT_EXCEEDED' || (rapidApiData?.error === 'RATE_LIMIT_EXCEEDED')) {
     console.log('RapidAPI rate limit reached, falling back to Alpha Vantage');
-    throw new Error('RATE_LIMIT_EXCEEDED');
+    return null;
   }
 
   if (!rapidApiError && rapidApiData?.result?.data?.[0]) {

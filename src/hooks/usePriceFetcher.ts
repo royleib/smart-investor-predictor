@@ -40,25 +40,21 @@ export const usePriceFetcher = ({ step, selectedSymbol, selectedAssetType }: Use
           if (price) return price;
         }
 
-        // Try to get a fallback price from our new Edge Function
-        console.log('Attempting to fetch fallback price for', selectedSymbol);
+        // Try to get a fallback price from our Edge Function
+        console.log('Attempting to fetch price for', selectedSymbol);
         const { data: fallbackData, error: fallbackError } = await supabase.functions.invoke('fetch-fallback-price', {
           body: { symbol: selectedSymbol }
         });
 
         if (!fallbackError && fallbackData?.price) {
-          console.log('Successfully fetched fallback price for', selectedSymbol, ':', fallbackData.price);
-          toast({
-            title: "Using Alternative Price Source",
-            description: "Real-time price services are currently using backup data sources.",
-            variant: "default",
-          });
+          console.log('Successfully fetched price for', selectedSymbol, ':', fallbackData.price);
           return fallbackData.price;
         }
 
+        // Only show error toast if we failed to get a price from any source
         console.error('No price available for:', selectedSymbol);
         toast({
-          title: "Price Unavailable",
+          title: "Error",
           description: "Could not retrieve price data for this asset.",
           variant: "destructive",
         });
@@ -66,28 +62,22 @@ export const usePriceFetcher = ({ step, selectedSymbol, selectedAssetType }: Use
 
       } catch (error: any) {
         console.error('Error in price fetching:', error);
-        if (error.message === 'RATE_LIMIT_EXCEEDED') {
-          toast({
-            title: "API Rate Limit Reached",
-            description: "Using alternative data source for price information.",
-            variant: "default",
-          });
-        }
         
-        // Try fallback one last time
+        // Try fallback one last time without notifying the user
         try {
           const { data: fallbackData } = await supabase.functions.invoke('fetch-fallback-price', {
             body: { symbol: selectedSymbol }
           });
 
           if (fallbackData?.price) {
-            console.log('Successfully fetched fallback price after error for', selectedSymbol, ':', fallbackData.price);
+            console.log('Successfully fetched price after error for', selectedSymbol, ':', fallbackData.price);
             return fallbackData.price;
           }
         } catch (fallbackError) {
           console.error('Error fetching fallback price:', fallbackError);
         }
         
+        // Only show error toast if all attempts failed
         toast({
           title: "Error",
           description: "Could not retrieve price data for this asset.",
