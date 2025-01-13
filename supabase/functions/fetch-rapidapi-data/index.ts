@@ -3,6 +3,7 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS'
 }
 
 console.log('Hello from fetch-rapidapi-data function!')
@@ -10,7 +11,12 @@ console.log('Hello from fetch-rapidapi-data function!')
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
+    return new Response(null, { 
+      headers: {
+        ...corsHeaders,
+        'Access-Control-Max-Age': '86400'
+      }
+    })
   }
 
   try {
@@ -27,7 +33,6 @@ serve(async (req) => {
       throw new Error('RapidAPI key not configured')
     }
 
-    // Fixed URL construction
     const baseUrl = 'https://ai-stock-market-forecast-price-predictions-stock-data.p.rapidapi.com'
     const endpointPath = endpoint === 'historical' ? 'getHistoricalData' : 
                         endpoint === 'forecast' ? 'forecast' : 
@@ -49,7 +54,19 @@ serve(async (req) => {
     // Check specifically for rate limit response
     if (response.status === 429) {
       console.error('RapidAPI rate limit reached')
-      throw new Error('RATE_LIMIT_EXCEEDED')
+      return new Response(
+        JSON.stringify({ 
+          error: 'RATE_LIMIT_EXCEEDED',
+          code: 429
+        }),
+        { 
+          status: 429,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json'
+          }
+        }
+      )
     }
 
     if (!response.ok) {

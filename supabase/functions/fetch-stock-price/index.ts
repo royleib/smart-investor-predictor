@@ -3,6 +3,7 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS'
 }
 
 console.log('Hello from fetch-stock-price function!')
@@ -13,8 +14,7 @@ serve(async (req) => {
     return new Response(null, { 
       headers: {
         ...corsHeaders,
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Max-Age': '86400',
+        'Access-Control-Max-Age': '86400'
       }
     })
   }
@@ -23,7 +23,16 @@ serve(async (req) => {
     const { symbol } = await req.json()
     
     if (!symbol) {
-      throw new Error('Symbol is required')
+      return new Response(
+        JSON.stringify({ error: 'Symbol is required' }),
+        { 
+          status: 400,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json'
+          }
+        }
+      )
     }
 
     console.log('Fetching price for symbol:', symbol)
@@ -121,7 +130,16 @@ serve(async (req) => {
     // Use Alpha Vantage as final fallback with better error handling
     const apiKey = Deno.env.get('ALPHA_VANTAGE_API_KEY')
     if (!apiKey) {
-      throw new Error('Alpha Vantage API key not configured')
+      return new Response(
+        JSON.stringify({ error: 'Alpha Vantage API key not configured' }),
+        { 
+          status: 500,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json'
+          }
+        }
+      )
     }
 
     let alphaVantageSymbol = symbol
@@ -154,7 +172,16 @@ serve(async (req) => {
     const response = await fetch(url)
     if (!response.ok) {
       console.error('Alpha Vantage response not OK:', await response.text())
-      throw new Error('Alpha Vantage response not OK')
+      return new Response(
+        JSON.stringify({ error: 'Alpha Vantage API error' }),
+        { 
+          status: response.status,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json'
+          }
+        }
+      )
     }
     
     const data = await response.json()
@@ -169,7 +196,16 @@ serve(async (req) => {
       )
     }
 
-    throw new Error('No price data available from any source')
+    return new Response(
+      JSON.stringify({ error: 'No price data available from any source' }),
+      { 
+        status: 404,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
 
   } catch (error) {
     console.error('Error in fetch-stock-price:', error.message)
@@ -179,7 +215,7 @@ serve(async (req) => {
         symbol: symbol
       }),
       { 
-        status: 400,
+        status: 500,
         headers: {
           ...corsHeaders,
           'Content-Type': 'application/json'
