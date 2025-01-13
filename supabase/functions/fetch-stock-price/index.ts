@@ -28,11 +28,33 @@ serve(async (req) => {
       throw new Error('Alpha Vantage API key not configured')
     }
 
-    // Construct Alpha Vantage API URL
-    // Note: For European stocks, we need to handle different exchanges
+    // For German stocks, try Yahoo Finance first as it tends to have better coverage
+    if (symbol.endsWith('.DE')) {
+      console.log('German stock detected, trying Yahoo Finance first')
+      try {
+        const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`
+        console.log('Fetching from Yahoo Finance URL:', yahooUrl)
+        
+        const yahooResponse = await fetch(yahooUrl)
+        if (yahooResponse.ok) {
+          const yahooData = await yahooResponse.json()
+          if (yahooData?.chart?.result?.[0]?.meta?.regularMarketPrice) {
+            const price = yahooData.chart.result[0].meta.regularMarketPrice
+            console.log('Successfully fetched German stock price from Yahoo Finance:', price)
+            return new Response(
+              JSON.stringify({ price }),
+              { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            )
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching from Yahoo Finance:', error)
+      }
+    }
+
+    // Construct Alpha Vantage API URL with proper exchange handling
     let alphaVantageSymbol = symbol
     if (symbol.includes('.')) {
-      // Handle European market symbols
       const [base, exchange] = symbol.split('.')
       switch (exchange) {
         case 'DE': // German stocks
@@ -65,57 +87,27 @@ serve(async (req) => {
     }
 
     const data = await response.json()
+    console.log('Alpha Vantage response:', JSON.stringify(data))
     
-    // Check if we got a valid price from Alpha Vantage
     if (data['Global Quote'] && data['Global Quote']['05. price']) {
       const price = parseFloat(data['Global Quote']['05. price'])
       console.log('Successfully fetched price from Alpha Vantage:', price)
       
       return new Response(
         JSON.stringify({ price }),
-        { 
-          headers: { 
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        }
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    // If we didn't get a valid price, try Yahoo Finance as fallback
-    console.log('No price from Alpha Vantage, trying Yahoo Finance...')
-    const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`
-    const yahooResponse = await fetch(yahooUrl)
-    
-    if (!yahooResponse.ok) {
-      throw new Error('Failed to fetch price from all sources')
-    }
-
-    const yahooData = await yahooResponse.json()
-    
-    if (!yahooData?.chart?.result?.[0]?.meta?.regularMarketPrice) {
-      throw new Error('No price data available from any source')
-    }
-
-    const yahooPrice = yahooData.chart.result[0].meta.regularMarketPrice
-    console.log('Successfully fetched price from Yahoo Finance:', yahooPrice)
-
-    return new Response(
-      JSON.stringify({ price: yahooPrice }),
-      { 
-        headers: { 
-          ...corsHeaders,
-          'Content-Type': 'application/json'
-        }
-      }
-    )
+    throw new Error('No price data available from any source')
 
   } catch (error) {
     console.error('Error in fetch-stock-price:', error.message)
     
     return new Response(
       JSON.stringify({ 
-        error: error.message || 'Failed to fetch stock price'
+        error: error.message || 'Failed to fetch stock price',
+        symbol: symbol
       }),
       { 
         status: 400,
