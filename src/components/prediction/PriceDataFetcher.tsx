@@ -211,6 +211,12 @@ export const PriceDataFetcher = ({ step, selectedSymbol, selectedAssetType, setC
               }
             });
 
+            // Check for rate limit error specifically
+            if (rapidApiError?.message === 'RATE_LIMIT_EXCEEDED' || (rapidApiData?.error === 'RATE_LIMIT_EXCEEDED')) {
+              console.log('RapidAPI rate limit reached, falling back to Alpha Vantage');
+              throw new Error('RATE_LIMIT_EXCEEDED');
+            }
+
             if (!rapidApiError && rapidApiData?.result?.data?.[0]) {
               const latestPrice = rapidApiData.result.data[0].close;
               console.log('Received real-time price from RapidAPI for', selectedSymbol, ':', latestPrice);
@@ -218,8 +224,8 @@ export const PriceDataFetcher = ({ step, selectedSymbol, selectedAssetType, setC
               return;
             }
 
-            // If RapidAPI fails, try Alpha Vantage as backup
-            console.log('RapidAPI failed, trying Alpha Vantage...');
+            // If RapidAPI fails for any reason, try Alpha Vantage as backup
+            console.log('RapidAPI failed or returned no data, trying Alpha Vantage...');
             const { data: alphaData, error: alphaError } = await supabase.functions.invoke('fetch-stock-price', {
               body: { symbol: selectedSymbol }
             });
@@ -236,6 +242,13 @@ export const PriceDataFetcher = ({ step, selectedSymbol, selectedAssetType, setC
           if (fallbackPrice) {
             console.log('Using fallback price for', selectedSymbol, ':', fallbackPrice);
             setCurrentPrice(fallbackPrice);
+            if (selectedAssetType === 'Stocks' && !selectedSymbol.includes('.')) {
+              toast({
+                title: "Using Cached Price",
+                description: "Real-time price services are currently unavailable. Using last known price.",
+                variant: "default",
+              });
+            }
           } else {
             console.error('No fallback price available for:', selectedSymbol);
             toast({
@@ -246,15 +259,19 @@ export const PriceDataFetcher = ({ step, selectedSymbol, selectedAssetType, setC
           }
         } catch (error) {
           console.error('Error in price fetching:', error);
+          // Handle rate limit specifically
+          if (error.message === 'RATE_LIMIT_EXCEEDED') {
+            toast({
+              title: "API Rate Limit Reached",
+              description: "Using alternative data source for price information.",
+              variant: "default",
+            });
+          }
+          
           const fallbackPrice = fallbackPrices[selectedSymbol];
           if (fallbackPrice) {
             console.log('Using fallback price after error for', selectedSymbol, ':', fallbackPrice);
             setCurrentPrice(fallbackPrice);
-            toast({
-              title: "Using Cached Price",
-              description: "Real-time price unavailable. Using last known price.",
-              variant: "default",
-            });
           } else {
             toast({
               title: "Error",

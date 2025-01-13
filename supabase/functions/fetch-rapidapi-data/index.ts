@@ -53,8 +53,15 @@ serve(async (req) => {
       body: JSON.stringify(requestBody)
     })
 
+    // Check specifically for rate limit response
+    if (response.status === 429) {
+      console.error('RapidAPI rate limit reached')
+      throw new Error('RATE_LIMIT_EXCEEDED')
+    }
+
     if (!response.ok) {
-      throw new Error(`RapidAPI error: ${response.status} ${response.statusText}`)
+      console.error(`RapidAPI error: ${response.status} ${response.statusText}`)
+      throw new Error(`API_ERROR_${response.status}`)
     }
 
     const data = await response.json()
@@ -75,10 +82,11 @@ serve(async (req) => {
     
     return new Response(
       JSON.stringify({ 
-        error: error.message || 'Failed to fetch stock data'
+        error: error.message,
+        code: error.message === 'RATE_LIMIT_EXCEEDED' ? 429 : 400
       }),
       { 
-        status: 400,
+        status: error.message === 'RATE_LIMIT_EXCEEDED' ? 429 : 400,
         headers: {
           ...corsHeaders,
           'Content-Type': 'application/json'
