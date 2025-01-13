@@ -1,6 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronRight, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
+import { translations, type Language } from "@/utils/i18n";
+
+interface StockSelectorProps {
+  onSelect: (symbol: string) => void;
+  market: string;
+  lang?: Language;
+}
 
 const stocksByMarket = {
   US: [
@@ -245,14 +252,32 @@ const stocksByMarket = {
   ]
 };
 
-interface StockSelectorProps {
-  onSelect: (symbol: string) => void;
-  market: string;
-}
-
-export const StockSelector = ({ onSelect, market }: StockSelectorProps) => {
+export const StockSelector = ({ onSelect, market, lang = 'en' }: StockSelectorProps) => {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const stocks = selectedCountry ? stocksByMarket[selectedCountry as keyof typeof stocksByMarket] : [];
+  const t = translations[lang];
+
+  const getCountryTranslation = (country: string) => {
+    const translationKeys: Record<string, keyof typeof translations[Language]> = {
+      'Germany': 'germany',
+      'UK': 'uk',
+      'France': 'france',
+      'Italy': 'italy',
+      'Netherlands': 'netherlands'
+    };
+    return t[translationKeys[country] as keyof typeof t] || country;
+  };
+
+  const getCountryDescription = (country: string) => {
+    const descriptionKeys: Record<string, keyof typeof translations[Language]> = {
+      'Germany': 'germanyStocks',
+      'UK': 'ukStocks',
+      'France': 'franceStocks',
+      'Italy': 'italyStocks',
+      'Netherlands': 'netherlandsStocks'
+    };
+    return t[descriptionKeys[country] as keyof typeof t] || `View ${country} stocks`;
+  };
 
   // For US market, show stocks directly
   if (market === 'US') {
@@ -295,8 +320,10 @@ export const StockSelector = ({ onSelect, market }: StockSelectorProps) => {
                 <TrendingUp className="h-6 w-6 text-blue-600" />
               </div>
               <div className="flex-grow">
-                <h3 className="text-xl font-montserrat font-semibold text-gray-800">{country}</h3>
-                <p className="text-sm text-gray-600">View {country} stocks</p>
+                <h3 className="text-xl font-montserrat font-semibold text-gray-800">
+                  {getCountryTranslation(country)}
+                </h3>
+                <p className="text-sm text-gray-600">{getCountryDescription(country)}</p>
               </div>
               <ChevronRight className="h-6 w-6 text-gray-400" />
             </CardContent>
@@ -314,7 +341,7 @@ export const StockSelector = ({ onSelect, market }: StockSelectorProps) => {
         className="mb-4 text-blue-600 hover:text-blue-800 flex items-center"
       >
         <ChevronRight className="h-4 w-4 rotate-180 mr-1" />
-        Back to Countries
+        {t.backToCountries}
       </button>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {stocks.map((stock) => (
