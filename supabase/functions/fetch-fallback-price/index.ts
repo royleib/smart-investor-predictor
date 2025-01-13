@@ -8,7 +8,6 @@ const corsHeaders = {
 console.log('Hello from fetch-fallback-price function!')
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -22,7 +21,95 @@ serve(async (req) => {
 
     console.log('Fetching fallback price for symbol:', symbol)
 
-    // Try Yahoo Finance first
+    // Handle cryptocurrencies first with CoinGecko
+    if (['BTC', 'ETH', 'USDT', 'BNB', 'SOL', 'XRP'].includes(symbol)) {
+      try {
+        const coinId = {
+          'BTC': 'bitcoin',
+          'ETH': 'ethereum',
+          'USDT': 'tether',
+          'BNB': 'binancecoin',
+          'SOL': 'solana',
+          'XRP': 'ripple'
+        }[symbol]
+
+        // Try CoinGecko first
+        const cgUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd`
+        console.log('Fetching from CoinGecko:', cgUrl)
+        
+        const cgResponse = await fetch(cgUrl)
+        if (cgResponse.ok) {
+          const cgData = await cgResponse.json()
+          if (cgData[coinId]?.usd) {
+            const price = Number(cgData[coinId].usd)
+            console.log('Successfully fetched price from CoinGecko:', price)
+            return new Response(
+              JSON.stringify({ price }),
+              { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            )
+          }
+        }
+
+        // If CoinGecko fails, try Binance API as fallback for crypto
+        const binanceSymbol = symbol === 'BTC' ? 'BTCUSDT' : 
+                            symbol === 'ETH' ? 'ETHUSDT' :
+                            symbol === 'BNB' ? 'BNBUSDT' :
+                            symbol === 'SOL' ? 'SOLUSDT' :
+                            symbol === 'XRP' ? 'XRPUSDT' : null
+
+        if (binanceSymbol) {
+          const binanceUrl = `https://api.binance.com/api/v3/ticker/price?symbol=${binanceSymbol}`
+          console.log('Fetching from Binance:', binanceUrl)
+          
+          const binanceResponse = await fetch(binanceUrl)
+          if (binanceResponse.ok) {
+            const binanceData = await binanceResponse.json()
+            if (binanceData?.price) {
+              const price = Number(binanceData.price)
+              console.log('Successfully fetched price from Binance:', price)
+              return new Response(
+                JSON.stringify({ price }),
+                { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+              )
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching crypto price:', error)
+      }
+    }
+
+    // For EU/German stocks, try multiple sources
+    if (symbol.includes('.DE') || symbol === 'SAP' || symbol === 'DB') {
+      try {
+        // Try Financial Modeling Prep first
+        const fmpApiKey = Deno.env.get('FMP_API_KEY')
+        if (fmpApiKey) {
+          const baseSymbol = symbol === 'DB' ? 'DB' : symbol.replace('.DE', '')
+          console.log('Processing German stock:', baseSymbol)
+          
+          const xetraUrl = `https://financialmodelingprep.com/api/v3/quote/${baseSymbol}.XETRA?apikey=${fmpApiKey}`
+          console.log('Fetching from FMP XETRA:', xetraUrl)
+          
+          const xetraResponse = await fetch(xetraUrl)
+          if (xetraResponse.ok) {
+            const xetraData = await xetraResponse.json()
+            if (Array.isArray(xetraData) && xetraData.length > 0 && xetraData[0].price) {
+              const price = Number(xetraData[0].price)
+              console.log('Successfully fetched XETRA price:', price)
+              return new Response(
+                JSON.stringify({ price }),
+                { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+              )
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching from FMP:', error)
+      }
+    }
+
+    // Try Yahoo Finance as a final fallback for all assets
     try {
       const yahooSymbol = symbol.includes('.DE') ? symbol : 
                          symbol === 'SAP' ? 'SAP.DE' :
@@ -37,7 +124,7 @@ serve(async (req) => {
         const yahooData = await yahooResponse.json()
         
         if (yahooData?.chart?.result?.[0]?.meta?.regularMarketPrice) {
-          const price = yahooData.chart.result[0].meta.regularMarketPrice
+          const price = Number(yahooData.chart.result[0].meta.regularMarketPrice)
           console.log('Successfully fetched price from Yahoo Finance:', price)
           return new Response(
             JSON.stringify({ price }),
@@ -47,39 +134,6 @@ serve(async (req) => {
       }
     } catch (error) {
       console.error('Error fetching from Yahoo Finance:', error)
-    }
-
-    // Try CoinGecko for cryptocurrencies
-    if (['BTC', 'ETH', 'USDT', 'BNB', 'SOL', 'XRP'].includes(symbol)) {
-      try {
-        const coinId = {
-          'BTC': 'bitcoin',
-          'ETH': 'ethereum',
-          'USDT': 'tether',
-          'BNB': 'binancecoin',
-          'SOL': 'solana',
-          'XRP': 'ripple'
-        }[symbol]
-
-        const url = `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd`
-        console.log('Fetching from CoinGecko:', url)
-        
-        const response = await fetch(url)
-        if (response.ok) {
-          const data = await response.json()
-          if (data[coinId]?.usd) {
-            const price = parseFloat(data[coinId].usd)
-            console.log('Successfully fetched price from CoinGecko:', price)
-            // Ensure we return the full price value without any decimal manipulation
-            return new Response(
-              JSON.stringify({ price: price }),
-              { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-            )
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching from CoinGecko:', error)
-      }
     }
 
     // If all attempts fail, throw an error
