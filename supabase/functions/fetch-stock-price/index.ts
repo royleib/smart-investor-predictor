@@ -29,54 +29,22 @@ serve(async (req) => {
         throw new Error('Financial Modeling Prep API key not configured')
       }
 
-      // For German stocks on XETRA, we need to use the correct exchange
+      // For German stocks, try real-time quote endpoint first
       const baseSymbol = symbol === 'DB' ? 'DB' : symbol.split('.')[0]
-      const fmpSymbol = `${baseSymbol}.XETRA`
-      const fmpUrl = `https://financialmodelingprep.com/api/v3/quote/${fmpSymbol}?apikey=${fmpApiKey}`
-      console.log('Fetching from FMP URL for German stock:', fmpSymbol)
-
+      
+      // Try real-time quote endpoint first
       try {
-        const fmpResponse = await fetch(fmpUrl)
-        console.log('FMP API Response status:', fmpResponse.status)
+        const rtQuoteUrl = `https://financialmodelingprep.com/api/v3/quote-short/${baseSymbol}.DE?apikey=${fmpApiKey}`
+        console.log('Fetching real-time quote from FMP:', rtQuoteUrl)
         
-        if (fmpResponse.ok) {
-          const fmpData = await fmpResponse.json()
-          console.log('FMP API Response data:', JSON.stringify(fmpData))
+        const rtResponse = await fetch(rtQuoteUrl)
+        if (rtResponse.ok) {
+          const rtData = await rtResponse.json()
+          console.log('Real-time quote response:', JSON.stringify(rtData))
           
-          if (Array.isArray(fmpData) && fmpData.length > 0) {
-            const price = fmpData[0].price
-            if (price) {
-              console.log('Successfully fetched German stock price from FMP:', price)
-              return new Response(
-                JSON.stringify({ price }),
-                { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-              )
-            }
-          }
-          console.log('FMP API returned invalid data format:', JSON.stringify(fmpData))
-        } else {
-          console.log('FMP API request failed with status:', fmpResponse.status)
-          const errorText = await fmpResponse.text()
-          console.log('FMP API error response:', errorText)
-        }
-      } catch (error) {
-        console.error('Error fetching from FMP API:', error)
-      }
-
-      // Try alternative FMP endpoint with different symbol format
-      try {
-        const altFmpSymbol = `${baseSymbol}.DE`
-        const altFmpUrl = `https://financialmodelingprep.com/api/v3/quote/${altFmpSymbol}?apikey=${fmpApiKey}`
-        console.log('Trying alternative FMP URL:', altFmpSymbol)
-        
-        const altResponse = await fetch(altFmpUrl)
-        if (altResponse.ok) {
-          const altData = await altResponse.json()
-          console.log('Alternative FMP response:', JSON.stringify(altData))
-          
-          if (Array.isArray(altData) && altData.length > 0 && altData[0].price) {
-            const price = altData[0].price
-            console.log('Successfully fetched German stock price from alternative FMP endpoint:', price)
+          if (Array.isArray(rtData) && rtData.length > 0 && rtData[0].price) {
+            const price = rtData[0].price
+            console.log('Successfully fetched real-time German stock price:', price)
             return new Response(
               JSON.stringify({ price }),
               { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -84,14 +52,33 @@ serve(async (req) => {
           }
         }
       } catch (error) {
-        console.error('Error fetching from alternative FMP endpoint:', error)
+        console.error('Error fetching real-time quote:', error)
       }
-      
-      console.log('FMP API attempts failed, trying Yahoo Finance...')
-    }
 
-    // Try Yahoo Finance as backup for German stocks
-    if (symbol.endsWith('.DE')) {
+      // Try historical data endpoint as backup
+      try {
+        const histUrl = `https://financialmodelingprep.com/api/v3/historical-price-full/${baseSymbol}.DE?apikey=${fmpApiKey}&serietype=line`
+        console.log('Trying historical data endpoint:', histUrl)
+        
+        const histResponse = await fetch(histUrl)
+        if (histResponse.ok) {
+          const histData = await histResponse.json()
+          console.log('Historical data response:', JSON.stringify(histData))
+          
+          if (histData.historical && histData.historical.length > 0) {
+            const price = histData.historical[0].close
+            console.log('Successfully fetched latest historical price:', price)
+            return new Response(
+              JSON.stringify({ price }),
+              { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            )
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching historical data:', error)
+      }
+
+      // Try Yahoo Finance as backup
       try {
         const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`
         console.log('Fetching from Yahoo Finance URL:', yahooUrl)
