@@ -68,10 +68,11 @@ serve(async (req) => {
         if (response.ok) {
           const data = await response.json()
           if (data[coinId]?.usd) {
-            const price = data[coinId].usd
+            const price = parseFloat(data[coinId].usd)
             console.log('Successfully fetched price from CoinGecko:', price)
+            // Ensure we return the full price value without any decimal manipulation
             return new Response(
-              JSON.stringify({ price }),
+              JSON.stringify({ price: price }),
               { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
             )
           }
