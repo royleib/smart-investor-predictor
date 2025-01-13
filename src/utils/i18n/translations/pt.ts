@@ -58,5 +58,6 @@ export const pt: TranslationType = {
   franceStocks: "Ver ações do mercado francês",
   italyStocks: "Ver ações do mercado italiano",
   netherlandsStocks: "Ver ações do mercado holandês",
-  backToCountries: "Voltar para Países"
+  backToCountries: "Voltar para Países",
+  view: "Ver"
 };

@@ -1,5 +1,3 @@
-import type { TranslationType } from '../types';
-
 export const nl: TranslationType = {
   welcome: "Slimme Marktvoorspellingen",
   chooseInvestment: "Kies uw investeringscategorie en krijg AI-gestuurde inzichten",
@@ -58,5 +56,6 @@ export const nl: TranslationType = {
   franceStocks: "Bekijk Franse marktaandelen",
   italyStocks: "Bekijk Italiaanse marktaandelen",
   netherlandsStocks: "Bekijk Nederlandse marktaandelen",
-  backToCountries: "Terug naar Landen"
+  backToCountries: "Terug naar Landen",
+  view: "Bekijk"
 };
