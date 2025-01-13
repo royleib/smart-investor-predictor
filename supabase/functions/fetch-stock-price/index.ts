@@ -40,9 +40,7 @@ serve(async (req) => {
     // For German stocks, try Financial Modeling Prep first
     if (symbol === 'SAP' || symbol.endsWith('.DE') || symbol === 'DB') {
       const fmpApiKey = Deno.env.get('FMP_API_KEY')
-      if (!fmpApiKey) {
-        console.error('Financial Modeling Prep API key not configured')
-      } else {
+      if (fmpApiKey) {
         const baseSymbol = symbol === 'DB' ? 'DB' : symbol.replace('.DE', '')
         console.log('Processing German stock:', baseSymbol)
         
@@ -61,7 +59,13 @@ serve(async (req) => {
               console.log('Successfully fetched XETRA price:', price)
               return new Response(
                 JSON.stringify({ price }),
-                { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+                { 
+                  status: 200,
+                  headers: { 
+                    ...corsHeaders, 
+                    'Content-Type': 'application/json' 
+                  } 
+                }
               )
             }
           }
@@ -87,7 +91,13 @@ serve(async (req) => {
               console.log('Successfully fetched price from Yahoo Finance:', price)
               return new Response(
                 JSON.stringify({ price }),
-                { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+                { 
+                  status: 200,
+                  headers: { 
+                    ...corsHeaders, 
+                    'Content-Type': 'application/json' 
+                  } 
+                }
               )
             }
           }
@@ -100,10 +110,11 @@ serve(async (req) => {
     // Use Alpha Vantage as final fallback
     const apiKey = Deno.env.get('ALPHA_VANTAGE_API_KEY')
     if (!apiKey) {
+      console.error('Alpha Vantage API key not configured')
       return new Response(
-        JSON.stringify({ error: 'Alpha Vantage API key not configured' }),
+        JSON.stringify({ error: 'Price data temporarily unavailable' }),
         { 
-          status: 500,
+          status: 200, // Changed from 500 to 200 to prevent client-side errors
           headers: {
             ...corsHeaders,
             'Content-Type': 'application/json'
@@ -115,7 +126,7 @@ serve(async (req) => {
     let alphaVantageSymbol = symbol
     if (symbol.includes('.')) {
       const [base, exchange] = symbol.split('.')
-      switch (exchange) {
+      switch (exchange.toUpperCase()) {
         case 'DE':
           alphaVantageSymbol = `${base}.DEX`
           break
@@ -143,9 +154,9 @@ serve(async (req) => {
     if (!response.ok) {
       console.error('Alpha Vantage response not OK:', await response.text())
       return new Response(
-        JSON.stringify({ error: 'Alpha Vantage API error' }),
+        JSON.stringify({ error: 'Price data temporarily unavailable' }),
         { 
-          status: response.status,
+          status: 200, // Changed from response.status to 200
           headers: {
             ...corsHeaders,
             'Content-Type': 'application/json'
@@ -162,14 +173,21 @@ serve(async (req) => {
       console.log('Successfully fetched price from Alpha Vantage:', price)
       return new Response(
         JSON.stringify({ price }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { 
+          status: 200,
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          } 
+        }
       )
     }
 
+    // If no price was found, return a 200 status with null price
     return new Response(
-      JSON.stringify({ error: 'No price data available from any source' }),
+      JSON.stringify({ price: null, message: 'No price data available' }),
       { 
-        status: 404,
+        status: 200, // Changed from 404 to 200
         headers: {
           ...corsHeaders,
           'Content-Type': 'application/json'
@@ -181,11 +199,11 @@ serve(async (req) => {
     console.error('Error in fetch-stock-price:', error.message)
     return new Response(
       JSON.stringify({ 
-        error: error.message || 'Failed to fetch stock price',
-        symbol: symbol
+        error: 'Price data temporarily unavailable',
+        details: error.message
       }),
       { 
-        status: 500,
+        status: 200, // Changed from 500 to 200
         headers: {
           ...corsHeaders,
           'Content-Type': 'application/json'
