@@ -38,7 +38,8 @@ export const fallbackPrices: Record<string, number> = {
   'JBT': 98.76,
   
   // German Stocks (Updated with latest accurate prices - April 2024)
-  'SAP.DE': 180.00,
+  'SAP': 246.00,  // Added SAP without .DE suffix
+  'SAP.DE': 246.00,
   'SIE.DE': 176.50,
   'DTE.DE': 22.15,
   'ALV.DE': 260.80,
