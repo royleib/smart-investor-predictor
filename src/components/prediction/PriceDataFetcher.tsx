@@ -197,32 +197,37 @@ export const PriceDataFetcher = ({ step, selectedSymbol, selectedAssetType, setC
               console.log('Received real-time price for ETF', selectedSymbol, ':', data.price);
               setCurrentPrice(data.price);
               return;
-            } else {
-              console.warn('No price data in response:', data);
-              throw new Error('No price data available in response');
             }
           }
 
-          // Handle US stocks
+          // Try RapidAPI first for stocks
           if (selectedAssetType === 'Stocks' && !selectedSymbol.includes('.')) {
-            console.log('Fetching US stock price for:', selectedSymbol);
+            console.log('Fetching stock data from RapidAPI for:', selectedSymbol);
             
-            const { data, error } = await supabase.functions.invoke('fetch-stock-price', {
+            const { data: rapidApiData, error: rapidApiError } = await supabase.functions.invoke('fetch-rapidapi-data', {
+              body: { 
+                symbol: selectedSymbol,
+                endpoint: 'getStockData'
+              }
+            });
+
+            if (!rapidApiError && rapidApiData?.result?.data?.[0]) {
+              const latestPrice = rapidApiData.result.data[0].close;
+              console.log('Received real-time price from RapidAPI for', selectedSymbol, ':', latestPrice);
+              setCurrentPrice(latestPrice);
+              return;
+            }
+
+            // If RapidAPI fails, try Alpha Vantage as backup
+            console.log('RapidAPI failed, trying Alpha Vantage...');
+            const { data: alphaData, error: alphaError } = await supabase.functions.invoke('fetch-stock-price', {
               body: { symbol: selectedSymbol }
             });
 
-            if (error) {
-              console.error('Edge function error:', error);
-              throw new Error(`Failed to fetch stock price: ${error.message}`);
-            }
-
-            if (data?.price) {
-              console.log('Received real-time price for stock', selectedSymbol, ':', data.price);
-              setCurrentPrice(data.price);
+            if (!alphaError && alphaData?.price) {
+              console.log('Received real-time price from Alpha Vantage for', selectedSymbol, ':', alphaData.price);
+              setCurrentPrice(alphaData.price);
               return;
-            } else {
-              console.warn('No price data in response:', data);
-              throw new Error('No price data available in response');
             }
           }
 
