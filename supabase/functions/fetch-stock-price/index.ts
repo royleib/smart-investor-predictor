@@ -29,9 +29,10 @@ serve(async (req) => {
         throw new Error('Financial Modeling Prep API key not configured')
       }
 
-      // For German stocks, we need to use the XETRA exchange symbol
-      const fmpSymbol = symbol === 'DB' ? 'DB' : `${symbol.split('.')[0]}.DE`
-      const fmpUrl = `https://financialmodelingprep.com/api/v3/quote-short/${fmpSymbol}?apikey=${fmpApiKey}`
+      // For German stocks on XETRA, we need to use the correct exchange
+      const baseSymbol = symbol === 'DB' ? 'DB' : symbol.split('.')[0]
+      const fmpSymbol = `${baseSymbol}.XETRA`
+      const fmpUrl = `https://financialmodelingprep.com/api/v3/quote/${fmpSymbol}?apikey=${fmpApiKey}`
       console.log('Fetching from FMP URL for German stock:', fmpSymbol)
 
       try {
@@ -42,16 +43,17 @@ serve(async (req) => {
           const fmpData = await fmpResponse.json()
           console.log('FMP API Response data:', JSON.stringify(fmpData))
           
-          if (Array.isArray(fmpData) && fmpData.length > 0 && fmpData[0].price) {
+          if (Array.isArray(fmpData) && fmpData.length > 0) {
             const price = fmpData[0].price
-            console.log('Successfully fetched German stock price from FMP:', price)
-            return new Response(
-              JSON.stringify({ price }),
-              { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-            )
-          } else {
-            console.log('FMP API returned invalid data format:', JSON.stringify(fmpData))
+            if (price) {
+              console.log('Successfully fetched German stock price from FMP:', price)
+              return new Response(
+                JSON.stringify({ price }),
+                { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+              )
+            }
           }
+          console.log('FMP API returned invalid data format:', JSON.stringify(fmpData))
         } else {
           console.log('FMP API request failed with status:', fmpResponse.status)
           const errorText = await fmpResponse.text()
@@ -60,8 +62,32 @@ serve(async (req) => {
       } catch (error) {
         console.error('Error fetching from FMP API:', error)
       }
+
+      // Try alternative FMP endpoint with different symbol format
+      try {
+        const altFmpSymbol = `${baseSymbol}.DE`
+        const altFmpUrl = `https://financialmodelingprep.com/api/v3/quote/${altFmpSymbol}?apikey=${fmpApiKey}`
+        console.log('Trying alternative FMP URL:', altFmpSymbol)
+        
+        const altResponse = await fetch(altFmpUrl)
+        if (altResponse.ok) {
+          const altData = await altResponse.json()
+          console.log('Alternative FMP response:', JSON.stringify(altData))
+          
+          if (Array.isArray(altData) && altData.length > 0 && altData[0].price) {
+            const price = altData[0].price
+            console.log('Successfully fetched German stock price from alternative FMP endpoint:', price)
+            return new Response(
+              JSON.stringify({ price }),
+              { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            )
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching from alternative FMP endpoint:', error)
+      }
       
-      console.log('FMP API attempt failed, trying Yahoo Finance...')
+      console.log('FMP API attempts failed, trying Yahoo Finance...')
     }
 
     // Try Yahoo Finance as backup for German stocks
