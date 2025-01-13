@@ -47,5 +47,16 @@ export const pt: TranslationType = {
   forexDescription: "Pares de negociação de moedas",
   indicesDescription: "Principais índices de mercado",
   aiEtfsDescription: "Fundos de investimento focados em IA",
-  notAuthenticated: "Você precisa estar logado para fazer previsões"
+  notAuthenticated: "Você precisa estar logado para fazer previsões",
+  germany: "Alemanha",
+  uk: "Reino Unido",
+  france: "França",
+  italy: "Itália",
+  netherlands: "Países Baixos",
+  germanyStocks: "Ver ações do mercado alemão",
+  ukStocks: "Ver ações do mercado britânico",
+  franceStocks: "Ver ações do mercado francês",
+  italyStocks: "Ver ações do mercado italiano",
+  netherlandsStocks: "Ver ações do mercado holandês",
+  backToCountries: "Voltar para Países"
 };

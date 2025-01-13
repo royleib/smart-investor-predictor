@@ -47,5 +47,16 @@ export const en: TranslationType = {
   forexDescription: "Enterprise Security - Bank-grade encryption and security",
   indicesDescription: "Real-time Updates - 24/7 market monitoring and alerts",
   aiEtfsDescription: "Active Community - Join our growing trading community",
-  notAuthenticated: "You must be logged in to make predictions"
+  notAuthenticated: "You must be logged in to make predictions",
+  germany: "Germany",
+  uk: "United Kingdom",
+  france: "France",
+  italy: "Italy",
+  netherlands: "Netherlands",
+  germanyStocks: "View German market stocks",
+  ukStocks: "View UK market stocks",
+  franceStocks: "View French market stocks",
+  italyStocks: "View Italian market stocks",
+  netherlandsStocks: "View Dutch market stocks",
+  backToCountries: "Back to Countries"
 };

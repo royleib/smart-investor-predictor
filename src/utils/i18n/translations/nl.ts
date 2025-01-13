@@ -47,5 +47,16 @@ export const nl: TranslationType = {
   forexDescription: "Valutahandelsparen",
   indicesDescription: "Belangrijke marktindices",
   aiEtfsDescription: "AI-gerichte beleggingsfondsen",
-  notAuthenticated: "U moet ingelogd zijn om voorspellingen te doen"
+  notAuthenticated: "U moet ingelogd zijn om voorspellingen te doen",
+  germany: "Duitsland",
+  uk: "Verenigd Koninkrijk",
+  france: "Frankrijk",
+  italy: "Italië",
+  netherlands: "Nederland",
+  germanyStocks: "Bekijk Duitse marktaandelen",
+  ukStocks: "Bekijk Britse marktaandelen",
+  franceStocks: "Bekijk Franse marktaandelen",
+  italyStocks: "Bekijk Italiaanse marktaandelen",
+  netherlandsStocks: "Bekijk Nederlandse marktaandelen",
+  backToCountries: "Terug naar Landen"
 };

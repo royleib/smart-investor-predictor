@@ -47,5 +47,16 @@ export const fr: TranslationType = {
   forexDescription: "Tradez des paires de devises",
   indicesDescription: "Tradez les principaux indices boursiers",
   aiEtfsDescription: "Tradez des ETFs axés sur l'IA",
-  notAuthenticated: "Vous devez être connecté pour faire des prédictions"
+  notAuthenticated: "Vous devez être connecté pour faire des prédictions",
+  germany: "Allemagne",
+  uk: "Royaume-Uni",
+  france: "France",
+  italy: "Italie",
+  netherlands: "Pays-Bas",
+  germanyStocks: "Voir les actions du marché allemand",
+  ukStocks: "Voir les actions du marché britannique",
+  franceStocks: "Voir les actions du marché français",
+  italyStocks: "Voir les actions du marché italien",
+  netherlandsStocks: "Voir les actions du marché néerlandais",
+  backToCountries: "Retour aux Pays"
 };

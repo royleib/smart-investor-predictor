@@ -63,5 +63,17 @@ export interface TranslationType {
   forexDescription: string;
   indicesDescription: string;
   aiEtfsDescription: string;
-  notAuthenticated: string;  // Added this new translation key
+  notAuthenticated: string;
+  // Add new translation keys for countries and their descriptions
+  germany: string;
+  uk: string;
+  france: string;
+  italy: string;
+  netherlands: string;
+  germanyStocks: string;
+  ukStocks: string;
+  franceStocks: string;
+  italyStocks: string;
+  netherlandsStocks: string;
+  backToCountries: string;
 }

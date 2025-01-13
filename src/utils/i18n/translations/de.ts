@@ -47,5 +47,16 @@ export const de: TranslationType = {
   forexDescription: "Handeln Sie Währungspaare",
   indicesDescription: "Handeln Sie wichtige Marktindizes",
   aiEtfsDescription: "Handeln Sie KI-fokussierte ETFs",
-  notAuthenticated: "Sie müssen angemeldet sein, um Vorhersagen zu treffen"
+  notAuthenticated: "Sie müssen angemeldet sein, um Vorhersagen zu treffen",
+  germany: "Deutschland",
+  uk: "Vereinigtes Königreich",
+  france: "Frankreich",
+  italy: "Italien",
+  netherlands: "Niederlande",
+  germanyStocks: "Deutsche Aktien anzeigen",
+  ukStocks: "Britische Aktien anzeigen",
+  franceStocks: "Französische Aktien anzeigen",
+  italyStocks: "Italienische Aktien anzeigen",
+  netherlandsStocks: "Niederländische Aktien anzeigen",
+  backToCountries: "Zurück zu den Ländern"
 };
