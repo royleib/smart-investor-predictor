@@ -1,4 +1,4 @@
-import { TranslationType } from '../types';
+import type { TranslationType } from '../types';
 
 export const nl: TranslationType = {
   welcome: "Slimme Marktvoorspellingen",
