@@ -1,3 +1,5 @@
+import { TranslationType } from '../types';
+
 export const nl: TranslationType = {
   welcome: "Slimme Marktvoorspellingen",
   chooseInvestment: "Kies uw investeringscategorie en krijg AI-gestuurde inzichten",
