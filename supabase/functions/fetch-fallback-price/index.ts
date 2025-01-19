@@ -9,17 +9,17 @@ const corsHeaders = {
 }
 
 const indexSymbolMap: { [key: string]: string } = {
-  'SPX': '.SPX',    // Updated S&P 500 symbol for Investing4 API
-  'NDX': '.NDX',    // NASDAQ
-  'DJI': '.DJI',    // Dow Jones
-  'UKX': '.FTSE',   // FTSE 100
-  'DAX': '.GDAXI',  // DAX
-  'IBEX': '.IBEX',  // IBEX 35
-  'FTSEMIB': '.FTSEMIB', // FTSE MIB
-  'CAC': '.FCHI',   // CAC 40
-  'OMX': '.OMXS30', // OMX 30
-  'AXJO': '.AXJO',  // ASX 200
-  'TSX': '.GSPTSE'  // TSX Composite
+  'SPX': '^SPX',    // S&P 500
+  'NDX': '^NDX',    // NASDAQ
+  'DJI': '^DJI',    // Dow Jones
+  'UKX': '^FTSE',   // FTSE 100
+  'DAX': '^GDAXI',  // DAX
+  'IBEX': '^IBEX',  // IBEX 35
+  'FTSEMIB': '^FTSEMIB', // FTSE MIB
+  'CAC': '^FCHI',   // CAC 40
+  'OMX': '^OMXS30', // OMX 30
+  'AXJO': '^AXJO',  // ASX 200
+  'TSX': '^GSPTSE'  // TSX Composite
 }
 
 serve(async (req) => {
@@ -52,33 +52,34 @@ serve(async (req) => {
         )
 
         if (!investing4Response.ok) {
-          throw new Error('Investing4 API request failed')
+          console.error('Investing4 API error:', await investing4Response.text())
+          throw new Error(`Investing4 API request failed with status ${investing4Response.status}`)
         }
 
         const data = await investing4Response.json()
-        console.log('Investing4 API response:', data)
+        console.log('Investing4 API response:', JSON.stringify(data))
 
-        if (data && data.price) {
-          const price = parseFloat(data.price)
-          console.log(`Returning real-time price for ${symbol}:`, price)
-          
-          return new Response(
-            JSON.stringify({ price }),
-            { 
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-              status: 200 
-            }
-          )
+        if (data && typeof data.price === 'string') {
+          const price = parseFloat(data.price.replace(/,/g, ''))
+          if (!isNaN(price)) {
+            console.log(`Returning real-time price for ${symbol}:`, price)
+            return new Response(
+              JSON.stringify({ price }),
+              { 
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+                status: 200 
+              }
+            )
+          }
         }
         
-        throw new Error('No price data available in Investing4 response')
+        throw new Error('Invalid price data in Investing4 response')
       } catch (error) {
         console.error('Error fetching from Investing4 API:', error)
-        // Fallback to FMP API if Investing4 fails
+        // Fallback to FMP API
         console.log('Falling back to FMP API for index')
-        const mappedSymbol = indexSymbolMap[symbol]
         const fmpResponse = await fetch(
-          `https://financialmodelingprep.com/api/v3/quote/${mappedSymbol}?apikey=${FMP_API_KEY}`
+          `https://financialmodelingprep.com/api/v3/quote/${indexSymbolMap[symbol]}?apikey=${FMP_API_KEY}`
         )
 
         if (!fmpResponse.ok) {
@@ -86,7 +87,9 @@ serve(async (req) => {
         }
 
         const data = await fmpResponse.json()
-        if (Array.isArray(data) && data.length > 0) {
+        console.log('FMP API response:', JSON.stringify(data))
+
+        if (Array.isArray(data) && data.length > 0 && typeof data[0].price === 'number') {
           const price = data[0].price
           return new Response(
             JSON.stringify({ price }),
@@ -110,9 +113,9 @@ serve(async (req) => {
     }
 
     const fmpData = await fmpResponse.json()
-    console.log('FMP API response:', fmpData)
+    console.log('FMP API response:', JSON.stringify(fmpData))
 
-    if (Array.isArray(fmpData) && fmpData.length > 0) {
+    if (Array.isArray(fmpData) && fmpData.length > 0 && typeof fmpData[0].price === 'number') {
       const price = fmpData[0].price
       return new Response(
         JSON.stringify({ price }),
@@ -124,7 +127,7 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ price: null, message: 'No price data available' }),
+      JSON.stringify({ price: null, message: 'No valid price data available' }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200 
