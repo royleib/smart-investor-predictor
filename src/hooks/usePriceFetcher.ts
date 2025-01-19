@@ -15,7 +15,25 @@ export const usePriceFetcher = ({ step, selectedSymbol, selectedAssetType }: Use
   const fetchPrice = async () => {
     if (step === 5 && selectedSymbol) {
       try {
-        // Handle ETFs with the Edge Function
+        // Handle indices first
+        if (selectedAssetType === 'Indices') {
+          console.log('Fetching index price for:', selectedSymbol);
+          
+          const { data: fallbackData, error: fallbackError } = await supabase.functions.invoke('fetch-fallback-price', {
+            body: { symbol: selectedSymbol }
+          });
+
+          if (!fallbackError && fallbackData?.price) {
+            console.log('Successfully fetched price for index', selectedSymbol, ':', fallbackData.price);
+            return fallbackData.price;
+          }
+
+          if (fallbackError) {
+            console.error('Error fetching index price:', fallbackError);
+          }
+        }
+
+        // Handle ETFs
         if (selectedAssetType === 'ETFs' || selectedAssetType === 'AI_ETFs') {
           console.log('Fetching ETF price for:', selectedSymbol);
           
@@ -34,7 +52,7 @@ export const usePriceFetcher = ({ step, selectedSymbol, selectedAssetType }: Use
           }
         }
 
-        // Try RapidAPI first for stocks
+        // Try RapidAPI for stocks
         if (selectedAssetType === 'Stocks' && !selectedSymbol.includes('.')) {
           const price = await fetchStockPrice(selectedSymbol);
           if (price) return price;
@@ -53,11 +71,6 @@ export const usePriceFetcher = ({ step, selectedSymbol, selectedAssetType }: Use
 
         // Only show error toast if we failed to get a price from any source
         console.error('No price available for:', selectedSymbol);
-        toast({
-          title: "Error",
-          description: "Could not retrieve price data for this asset.",
-          variant: "destructive",
-        });
         return null;
 
       } catch (error: any) {
@@ -77,12 +90,6 @@ export const usePriceFetcher = ({ step, selectedSymbol, selectedAssetType }: Use
           console.error('Error fetching fallback price:', fallbackError);
         }
         
-        // Only show error toast if all attempts failed
-        toast({
-          title: "Error",
-          description: "Could not retrieve price data for this asset.",
-          variant: "destructive",
-        });
         return null;
       }
     }
