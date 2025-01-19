@@ -24,68 +24,52 @@ const indexSymbolMap: { [key: string]: string } = {
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response(null, { headers: corsHeaders })
   }
 
   try {
     const { symbol } = await req.json()
     console.log('Fetching price for symbol:', symbol)
 
-    // Handle indices with Seeking Alpha API
+    // Handle indices with FMP API
     if (symbol in indexSymbolMap) {
-      console.log('Fetching index price from Seeking Alpha API')
+      console.log('Fetching index price from FMP API')
+      const mappedSymbol = indexSymbolMap[symbol]
+      
       try {
-        const seekingAlphaResponse = await fetch(
-          `https://seeking-alpha.p.rapidapi.com/market/get-earnings-calendar`,
-          {
-            method: 'GET',
-            headers: {
-              'x-rapidapi-host': 'seeking-alpha.p.rapidapi.com',
-              'x-rapidapi-key': RAPIDAPI_KEY || '',
-            },
-          }
+        const fmpResponse = await fetch(
+          `https://financialmodelingprep.com/api/v3/quote/${mappedSymbol}?apikey=${FMP_API_KEY}`
         )
 
-        if (!seekingAlphaResponse.ok) {
-          throw new Error('Seeking Alpha API request failed')
+        if (!fmpResponse.ok) {
+          throw new Error('FMP API request failed')
         }
 
-        const data = await seekingAlphaResponse.json()
-        console.log('Seeking Alpha API response:', data)
+        const data = await fmpResponse.json()
+        console.log('FMP API response for index:', data)
 
-        // Updated mock prices to reflect more accurate, current market values
-        const mockPrices: { [key: string]: number } = {
-          'SPX': 4839.81,    // S&P 500
-          'NDX': 17314.75,   // NASDAQ 100
-          'DJI': 37863.80,   // Dow Jones
-          'UKX': 7461.93,    // FTSE 100
-          'DAX': 16555.13,   // DAX
-          'IBEX': 9890.20,   // IBEX 35
-          'FTSEMIB': 30206.35, // FTSE MIB
-          'CAC': 7401.13,    // CAC 40
-          'OMX': 2235.90,    // OMX 30
-          'AXJO': 7495.30,   // ASX 200
-          'TSX': 20882.80    // TSX Composite
+        if (Array.isArray(data) && data.length > 0) {
+          const price = data[0].price
+          console.log(`Returning real-time price for ${symbol}:`, price)
+          
+          return new Response(
+            JSON.stringify({ price }),
+            { 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              status: 200 
+            }
+          )
         }
-
-        const price = mockPrices[symbol] || 0
-        console.log(`Returning price for ${symbol}:`, price)
         
-        return new Response(
-          JSON.stringify({ price }),
-          { 
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            status: 200 
-          }
-        )
+        throw new Error('No price data available in FMP response')
       } catch (error) {
-        console.error('Error fetching from Seeking Alpha:', error)
+        console.error('Error fetching from FMP API:', error)
         throw error
       }
     }
 
     // Fallback to FMP API for other symbols
-    console.log('Falling back to FMP API')
+    console.log('Falling back to FMP API for non-index symbol')
     const fmpResponse = await fetch(
       `https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=${FMP_API_KEY}`
     )
