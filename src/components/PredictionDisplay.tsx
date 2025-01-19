@@ -21,6 +21,7 @@ interface PredictionProps {
 
 export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanation, lang, userId }: PredictionProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [conversionPixelUrl, setConversionPixelUrl] = useState<string | null>(null);
   const t = translations[lang];
 
   const getPredictionExplanation = (period: string, price: number, currentPrice: number) => {
@@ -50,8 +51,9 @@ export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanati
   const handleTradeClick = async () => {
     setIsLoading(true);
     try {
-      const url = await getTradingUrl(symbol, userId);
-      window.open(url, '_blank');
+      const { etoroUrl, pixelUrl } = await getTradingUrl(symbol, userId);
+      setConversionPixelUrl(pixelUrl);
+      window.open(etoroUrl, '_blank');
     } catch (error) {
       console.error('Error generating trading URL:', error);
     } finally {
@@ -61,6 +63,15 @@ export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanati
 
   return (
     <div className="space-y-4 md:space-y-6 p-2 md:p-4">
+      {/* Conversion tracking pixel */}
+      {conversionPixelUrl && (
+        <iframe 
+          src={conversionPixelUrl}
+          style={{ width: '1px', height: '1px', position: 'absolute', left: '-9999px' }}
+          title="Conversion Tracking"
+        />
+      )}
+      
       <h2 className="text-xl md:text-2xl font-montserrat font-bold text-center mb-6 md:mb-8">
         {t.predictionsFor} {symbol}
       </h2>
