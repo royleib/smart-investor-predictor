@@ -9,17 +9,17 @@ const corsHeaders = {
 }
 
 const indexSymbolMap: { [key: string]: string } = {
-  'SPX': '^GSPC',  // S&P 500
-  'NDX': '^IXIC',  // NASDAQ
-  'DJI': '^DJI',   // Dow Jones
-  'UKX': '^FTSE',  // FTSE 100
-  'DAX': '^GDAXI', // DAX
-  'IBEX': '^IBEX', // IBEX 35
-  'FTSEMIB': 'FTSEMIB.MI', // FTSE MIB
-  'CAC': '^FCHI',  // CAC 40
-  'OMX': '^OMX',   // OMX 30
-  'AXJO': '^AXJO', // ASX 200
-  'TSX': '^GSPTSE' // TSX Composite
+  'SPX': '.SPX',    // Updated S&P 500 symbol for Investing4 API
+  'NDX': '.NDX',    // NASDAQ
+  'DJI': '.DJI',    // Dow Jones
+  'UKX': '.FTSE',   // FTSE 100
+  'DAX': '.GDAXI',  // DAX
+  'IBEX': '.IBEX',  // IBEX 35
+  'FTSEMIB': '.FTSEMIB', // FTSE MIB
+  'CAC': '.FCHI',   // CAC 40
+  'OMX': '.OMXS30', // OMX 30
+  'AXJO': '.AXJO',  // ASX 200
+  'TSX': '.GSPTSE'  // TSX Composite
 }
 
 serve(async (req) => {
