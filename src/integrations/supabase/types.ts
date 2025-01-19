@@ -9,6 +9,30 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      etoro_conversions: {
+        Row: {
+          conversion_id: string
+          created_at: string
+          id: number
+          symbol: string
+          user_id: string | null
+        }
+        Insert: {
+          conversion_id: string
+          created_at?: string
+          id?: number
+          symbol: string
+          user_id?: string | null
+        }
+        Update: {
+          conversion_id?: string
+          created_at?: string
+          id?: number
+          symbol?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

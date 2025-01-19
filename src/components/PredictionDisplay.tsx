@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpRight, ArrowDownRight, ExternalLink } from 'lucide-react';
 import { translations, type Language } from "@/utils/i18n";
 import { getTradingUrl } from "@/utils/tradingUrls";
+import { useState } from 'react';
 
 interface PredictionProps {
   symbol: string;
@@ -15,9 +16,11 @@ interface PredictionProps {
   }[];
   explanation: string;
   lang: Language;
+  userId?: string;
 }
 
-export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanation, lang }: PredictionProps) => {
+export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanation, lang, userId }: PredictionProps) => {
+  const [isLoading, setIsLoading] = useState(false);
   const t = translations[lang];
 
   const getPredictionExplanation = (period: string, price: number, currentPrice: number) => {
@@ -42,6 +45,18 @@ export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanati
       '1 Year': t.year
     };
     return periodMap[period] || period;
+  };
+
+  const handleTradeClick = async () => {
+    setIsLoading(true);
+    try {
+      const url = await getTradingUrl(symbol, userId);
+      window.open(url, '_blank');
+    } catch (error) {
+      console.error('Error generating trading URL:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -89,9 +104,10 @@ export const PredictionDisplay = ({ symbol, currentPrice, predictions, explanati
       <div className="mt-6 md:mt-8 space-y-2">
         <Button 
           className="w-full py-4 md:py-6 text-base md:text-lg font-semibold bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-300 group"
-          onClick={() => window.open(getTradingUrl(symbol), '_blank')}
+          onClick={handleTradeClick}
+          disabled={isLoading}
         >
-          {t.startTradingOn.replace('{symbol}', symbol)}
+          {isLoading ? 'Loading...' : t.startTradingOn.replace('{symbol}', symbol)}
           <ExternalLink className="ml-2 h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-1 transition-transform" />
         </Button>
         <p className="text-xs text-gray-500 text-center mt-2">

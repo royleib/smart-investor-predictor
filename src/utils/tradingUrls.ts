@@ -1,3 +1,6 @@
+import { supabase } from "@/integrations/supabase/client";
+import { nanoid } from 'nanoid';
+
 const customTradingUrls: Record<string, string> = {
   'BTC': 'https://med.etoro.com/B21586_A71830_TClick.aspx',
   'AMZN': 'https://med.etoro.com/B20177_A71830_TClick.aspx',
@@ -13,6 +16,29 @@ const customTradingUrls: Record<string, string> = {
 
 const defaultTradingUrl = 'https://med.etoro.com/B12087_A71830_TClick.aspx';
 
-export const getTradingUrl = (symbol: string): string => {
-  return customTradingUrls[symbol] || defaultTradingUrl;
+export const getTradingUrl = async (symbol: string, userId?: string): Promise<string> => {
+  const baseUrl = customTradingUrls[symbol] || defaultTradingUrl;
+  const conversionId = nanoid();
+
+  if (userId) {
+    try {
+      await supabase
+        .from('etoro_conversions')
+        .insert([
+          { 
+            user_id: userId,
+            symbol,
+            conversion_id: conversionId
+          }
+        ]);
+
+      // Add Google Ads conversion tracking parameters
+      return `${baseUrl}?conversion_id=${conversionId}`;
+    } catch (error) {
+      console.error('Error tracking conversion:', error);
+      return baseUrl;
+    }
+  }
+
+  return baseUrl;
 };

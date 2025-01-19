@@ -30,7 +30,7 @@ export const PredictionHandler = ({
     <>
       {showLimitAlert && (
         <PredictionLimitAlert 
-          userId={session.user.id} 
+          userId={session?.user?.id} 
           onClose={() => setShowLimitAlert(false)} 
         />
       )}
@@ -46,6 +46,7 @@ export const PredictionHandler = ({
         <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-4 sm:p-8">
           <PredictionDisplay
             {...generatePredictions(currentPrice, selectedSymbol, selectedAssetType)}
+            userId={session?.user?.id}
             lang={lang}
           />
         </div>
