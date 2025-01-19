@@ -31,25 +31,35 @@ serve(async (req) => {
     const { symbol } = await req.json()
     console.log('Fetching price for symbol:', symbol)
 
-    // Handle indices with FMP API
+    // Handle indices with Investing4 API
     if (symbol in indexSymbolMap) {
-      console.log('Fetching index price from FMP API')
-      const mappedSymbol = indexSymbolMap[symbol]
-      
+      console.log('Fetching index price from Investing4 API')
       try {
-        const fmpResponse = await fetch(
-          `https://financialmodelingprep.com/api/v3/quote/${mappedSymbol}?apikey=${FMP_API_KEY}`
+        const investing4Response = await fetch(
+          'https://investing4.p.rapidapi.com/indices/get-details',
+          {
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json',
+              'x-rapidapi-host': 'investing4.p.rapidapi.com',
+              'x-rapidapi-key': RAPIDAPI_KEY || '',
+            },
+            body: JSON.stringify({
+              symbol: indexSymbolMap[symbol],
+              lang: 'en'
+            })
+          }
         )
 
-        if (!fmpResponse.ok) {
-          throw new Error('FMP API request failed')
+        if (!investing4Response.ok) {
+          throw new Error('Investing4 API request failed')
         }
 
-        const data = await fmpResponse.json()
-        console.log('FMP API response for index:', data)
+        const data = await investing4Response.json()
+        console.log('Investing4 API response:', data)
 
-        if (Array.isArray(data) && data.length > 0) {
-          const price = data[0].price
+        if (data && data.price) {
+          const price = parseFloat(data.price)
           console.log(`Returning real-time price for ${symbol}:`, price)
           
           return new Response(
@@ -61,15 +71,36 @@ serve(async (req) => {
           )
         }
         
-        throw new Error('No price data available in FMP response')
+        throw new Error('No price data available in Investing4 response')
       } catch (error) {
-        console.error('Error fetching from FMP API:', error)
-        throw error
+        console.error('Error fetching from Investing4 API:', error)
+        // Fallback to FMP API if Investing4 fails
+        console.log('Falling back to FMP API for index')
+        const mappedSymbol = indexSymbolMap[symbol]
+        const fmpResponse = await fetch(
+          `https://financialmodelingprep.com/api/v3/quote/${mappedSymbol}?apikey=${FMP_API_KEY}`
+        )
+
+        if (!fmpResponse.ok) {
+          throw new Error('FMP API request failed')
+        }
+
+        const data = await fmpResponse.json()
+        if (Array.isArray(data) && data.length > 0) {
+          const price = data[0].price
+          return new Response(
+            JSON.stringify({ price }),
+            { 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              status: 200 
+            }
+          )
+        }
       }
     }
 
     // Fallback to FMP API for other symbols
-    console.log('Falling back to FMP API for non-index symbol')
+    console.log('Using FMP API for non-index symbol')
     const fmpResponse = await fetch(
       `https://financialmodelingprep.com/api/v3/quote/${symbol}?apikey=${FMP_API_KEY}`
     )
