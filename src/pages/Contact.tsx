@@ -1,14 +1,19 @@
 import { Header } from "@/components/home/Header";
 import { type Language } from "@/utils/i18n";
+import { Mail } from 'lucide-react';
 
 interface ContactProps {
   lang: Language;
 }
 
 const Contact = ({ lang }: ContactProps) => {
+  const handleSignOut = () => {
+    // Empty function since these pages don't need sign out functionality
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      <Header currentLang={lang} />
+      <Header currentLang={lang} onSignOut={handleSignOut} />
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <h1 className="text-3xl font-bold mb-6">Contact Us</h1>
         <div className="bg-white rounded-lg shadow-sm p-6">
@@ -18,7 +23,7 @@ const Contact = ({ lang }: ContactProps) => {
           
           <div className="space-y-4">
             <div className="flex items-center">
-              <mail className="w-5 h-5 text-blue-500 mr-3" />
+              <Mail className="w-5 h-5 text-blue-500 mr-3" />
               <span>support@marketsprophet.com</span>
             </div>
           </div>
