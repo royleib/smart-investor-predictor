@@ -1,37 +1,55 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export const fetchStockPrice = async (symbol: string): Promise<number | null> => {
-  console.log('Fetching stock data from RapidAPI for:', symbol);
-  
-  const { data: rapidApiData, error: rapidApiError } = await supabase.functions.invoke('fetch-rapidapi-data', {
-    body: { 
-      symbol: symbol,
-      endpoint: 'getStockData'
+  // First try Alpha Vantage as primary source
+  try {
+    console.log('Fetching stock price from Alpha Vantage for:', symbol);
+    const { data: alphaData, error: alphaError } = await supabase.functions.invoke('fetch-stock-price', {
+      body: { symbol: symbol }
+    });
+
+    if (!alphaError && alphaData?.price) {
+      console.log('Successfully fetched price from Alpha Vantage for', symbol, ':', alphaData.price);
+      return alphaData.price;
     }
-  });
-
-  // Check for rate limit error specifically
-  if (rapidApiError?.message === 'RATE_LIMIT_EXCEEDED' || (rapidApiData?.error === 'RATE_LIMIT_EXCEEDED')) {
-    console.log('RapidAPI rate limit reached, falling back to Alpha Vantage');
-    return null;
+  } catch (error) {
+    console.error('Error fetching from Alpha Vantage:', error);
   }
 
-  if (!rapidApiError && rapidApiData?.result?.data?.[0]) {
-    const latestPrice = rapidApiData.result.data[0].close;
-    console.log('Received real-time price from RapidAPI for', symbol, ':', latestPrice);
-    return latestPrice;
+  // Then try FMP as second source
+  try {
+    console.log('Attempting to fetch from FMP for:', symbol);
+    const { data: fallbackData, error: fallbackError } = await supabase.functions.invoke('fetch-fallback-price', {
+      body: { symbol: symbol }
+    });
+
+    if (!fallbackError && fallbackData?.price) {
+      console.log('Successfully fetched price from FMP for', symbol, ':', fallbackData.price);
+      return fallbackData.price;
+    }
+  } catch (error) {
+    console.error('Error fetching from FMP:', error);
   }
 
-  // If RapidAPI fails for any reason, try Alpha Vantage as backup
-  console.log('RapidAPI failed or returned no data, trying Alpha Vantage...');
-  const { data: alphaData, error: alphaError } = await supabase.functions.invoke('fetch-stock-price', {
-    body: { symbol: symbol }
-  });
+  // Finally try RapidAPI as last resort
+  try {
+    console.log('Attempting to fetch from RapidAPI for:', symbol);
+    const { data: rapidApiData, error: rapidApiError } = await supabase.functions.invoke('fetch-rapidapi-data', {
+      body: { 
+        symbol: symbol,
+        endpoint: 'getStockData'
+      }
+    });
 
-  if (!alphaError && alphaData?.price) {
-    console.log('Received real-time price from Alpha Vantage for', symbol, ':', alphaData.price);
-    return alphaData.price;
+    if (!rapidApiError && rapidApiData?.result?.data?.[0]) {
+      const latestPrice = rapidApiData.result.data[0].close;
+      console.log('Received price from RapidAPI for', symbol, ':', latestPrice);
+      return latestPrice;
+    }
+  } catch (error) {
+    console.error('Error fetching from RapidAPI:', error);
   }
 
+  console.error('All price sources failed for symbol:', symbol);
   return null;
 };
